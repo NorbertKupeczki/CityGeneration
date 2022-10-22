@@ -19,7 +19,7 @@ public class PerlinGenerator : MonoBehaviour
 
     public void SetMapSize(int width, int height)
     {
-        mapSize = new Vector2(width, height);
+        mapSize = new Vector2(width * 2, height * 2);
     }
 
     public float GetNoiseValue(int x, int y)
@@ -38,6 +38,7 @@ public class PerlinGenerator : MonoBehaviour
                 noiseMap.SetPixel(x, y, CalculateColour(x, y));
             }
         }
+        noiseMap.filterMode = FilterMode.Point;
         noiseMap.Apply();
         perlinMap = noiseMap;
         return noiseMap;

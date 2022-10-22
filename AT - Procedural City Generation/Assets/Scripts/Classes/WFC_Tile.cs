@@ -5,7 +5,7 @@ using UnityEngine;
 public class WFC_Tile : MonoBehaviour
 {
     [SerializeField] int id;
-    [SerializeField] List<int> validTiles = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+    [SerializeField] List<int> validTiles = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
     [SerializeField] int entrophy;
     [SerializeField] bool solved = false;
 

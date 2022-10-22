@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class RoadNetworkManager : MonoBehaviour
 {
+    private enum GenerationMethod
+    {
+        MANUAL = 0,
+        AUTO = 1,
+        VISUALIZED = 2
+    }
+
     [Header("Tiles")]
     [SerializeField] GameObject[] tiles = new GameObject[] { };
 
@@ -12,28 +19,42 @@ public class RoadNetworkManager : MonoBehaviour
     [SerializeField] List<GameObject> wfcTiles = new List<GameObject>();
     [SerializeField] List<GameObject> shortlistedTiles = new List<GameObject>();
 
-    [Header("Road network properties")]
+    [Header("Road network")]
+    [SerializeField] GenerationMethod generationMethod = GenerationMethod.AUTO;
     [SerializeField] int width;
     [SerializeField] int height;
 
-    [SerializeField] bool runCoroutine = true;
+    private void Awake()
+    {
+        PerlinGenerator perlinGenerator = FindObjectOfType<PerlinGenerator>();
+        perlinGenerator.SetMapSize(width, height);
+    }
 
     void Start()
     {
         GenerateGrid();
         //InstantiateTile(PickRandomGridTile());
 
-        //GenerateRoadNetwork();
-        if (runCoroutine)
+        switch (generationMethod)
         {
-            StartCoroutine(GenerateRoads());
+            case GenerationMethod.MANUAL:
+                break;
+            case GenerationMethod.AUTO:
+                GenerateRoadNetwork();
+                break;
+            case GenerationMethod.VISUALIZED:
+                StartCoroutine(GenerateRoads());
+                break;
+            default:
+                break;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !runCoroutine)
+        if (Input.GetKeyDown(KeyCode.Space) &&
+            generationMethod == GenerationMethod.MANUAL)
         {
             InstantiateTile(shortlistedTiles[0]);
         }
@@ -74,12 +95,20 @@ public class RoadNetworkManager : MonoBehaviour
                 ++tileId;
             }
         }
-
+        
         GameObject edgeTile = wfcTiles[0];
         for (int i = 0; i < width; ++i)
         {
-            InstantiateSpecificTile(edgeTile,
-                                    i == Mathf.Floor(width * 0.5f) ? 2 : 0);
+            if (i != Mathf.Floor(width * 0.5f) + 1)
+            {
+                InstantiateSpecificTile(edgeTile,
+                                        i == Mathf.Floor(width * 0.5f) ? 3 : 0);
+            }
+            else
+            {
+                InstantiateSpecificTile(edgeTile, 4);
+            }
+
             if (edgeTile.GetComponent<WFC_Tile>().GetID() == width -1)
             {
                 edgeTile = edgeTile.GetComponent<WFC_Tile>().GetSouthNeighbour();
@@ -92,8 +121,16 @@ public class RoadNetworkManager : MonoBehaviour
 
         for (int i = 1; i < height; ++i)
         {
-            InstantiateSpecificTile(edgeTile,
+            if (i != Mathf.Floor(height * 0.5f) + 1)
+            {
+                InstantiateSpecificTile(edgeTile,
                                     i == Mathf.Floor(height * 0.5f) ? 1 : 0);
+            }
+            else
+            {
+                InstantiateSpecificTile(edgeTile, 2);
+            }
+            
             if (edgeTile.GetComponent<WFC_Tile>().GetID() == height * width - 1)
             {
                 edgeTile = edgeTile.GetComponent<WFC_Tile>().GetWestNeighbour();
@@ -106,8 +143,16 @@ public class RoadNetworkManager : MonoBehaviour
 
         for (int i = 1; i < width; ++i)
         {
-            InstantiateSpecificTile(edgeTile,
-                                    i == Mathf.Floor(height * 0.5f) ? 2 : 0);
+            if (i != Mathf.Floor(width * 0.5f) + 1)
+            {
+                InstantiateSpecificTile(edgeTile,
+                                    i == Mathf.Floor(height * 0.5f) ? 4 : 0);
+            }
+            else
+            {
+                InstantiateSpecificTile(edgeTile, 3);
+            }
+            
             if (edgeTile.GetComponent<WFC_Tile>().GetID() == (height -1) * width)
             {
                 edgeTile = edgeTile.GetComponent<WFC_Tile>().GetNorthNeighbour();
@@ -120,8 +165,16 @@ public class RoadNetworkManager : MonoBehaviour
 
         for (int i = 1; i < height - 1; ++i)
         {
-            InstantiateSpecificTile(edgeTile,
-                                    i == Mathf.Floor(height * 0.5f) ? 1 : 0);
+            if (i != Mathf.Floor(height * 0.5f) + 1)
+            {
+                InstantiateSpecificTile(edgeTile,
+                                    i == Mathf.Floor(height * 0.5f) ? 2 : 0);
+            }
+            else
+            {
+                InstantiateSpecificTile(edgeTile, 1);
+            }
+
             edgeTile = edgeTile.GetComponent<WFC_Tile>().GetNorthNeighbour();
             
         }
@@ -245,7 +298,7 @@ public class RoadNetworkManager : MonoBehaviour
 
     private List<int> GetInvalidTiles(List<int> validTiles)
     {
-        List<int> invalidTiles = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+        List<int> invalidTiles = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
         foreach  (int item in validTiles)
         {

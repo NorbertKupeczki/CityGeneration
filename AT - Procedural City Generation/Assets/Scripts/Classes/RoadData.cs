@@ -5,18 +5,19 @@ public static class RoadData
 {
     static IDictionary<int, float> RoadWeights = new Dictionary<int, float>()
     {
-        { 0,  5.0f }, // Empty
-        { 1,  3.0f }, // Road, Horizontal
-        { 2,  3.0f }, // Road, Vertical
-        { 3,  0.5f }, // Curve, SE
-        { 4,  0.5f }, // Curve, SW
-        { 5,  0.5f }, // Curve, NW
-        { 6,  0.5f }, // Curve, NE
-        { 7,  0.5f }, // T-junktion, N
-        { 8,  0.5f }, // T-junktion, E
-        { 9,  0.5f }, // T-junktion, S
-        { 10, 0.5f }, // T-junktion, W
-        { 11, 1.0f }, // Crossroad
+        { 0,  1.0f }, // Empty
+        { 1,  2.5f }, // Road, Horizontal S
+        { 2,  2.5f }, // Road, Horizontal N
+        { 3,  2.5f }, // Road, Vertical E
+        { 4,  2.5f }, // Road, Vertical W
+        { 5,  1.75f }, // Curve, SE
+        { 6,  1.75f }, // Curve, SW
+        { 7,  1.75f }, // Curve, NW
+        { 8,  1.75f }, // Curve, NE
+        { 9,  0.2f }, // Corner, SE
+        { 10, 0.2f }, // Corner, SW
+        { 11, 0.2f }, // Corner, NW
+        { 12, 0.2f }, // Corner, NE
     };
 
     public static int GetWeightedRoadIndex(List<int> _indices)

@@ -1,7 +1,5 @@
-using Palmmedia.ReportGenerator.Core;
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RoadClass : MonoBehaviour
@@ -9,11 +7,7 @@ public class RoadClass : MonoBehaviour
     [Header("Base information")]
     [SerializeField] string _name;
     [SerializeField] int id;
-    [SerializeField] int rotation;
     [SerializeField] Vector2 mapSize;
-
-    [Header("Components")]
-    [SerializeField] GameObject meshComponent;
 
     [Header("Valid Neighbours")]
     [SerializeField] List<int> north = new List<int> { };
@@ -25,11 +19,15 @@ public class RoadClass : MonoBehaviour
     [SerializeField] private PerlinGenerator perlinGenerator;
     [SerializeField] uint maxBuildingHeight = 5;
 
-    private void Awake()
+    void Awake()
+    {
+        
+    }
+
+    void Start()
     {
         gameObject.name = _name + " (" + gameObject.transform.position.x + ":" + gameObject.transform.position.z + ")";
         perlinGenerator = FindObjectOfType<PerlinGenerator>();
-        meshComponent.transform.rotation = Quaternion.Euler( 0, 90 * rotation, 0);
         GenerateBuildings();
     }
 
@@ -51,30 +49,16 @@ public class RoadClass : MonoBehaviour
 
     private Vector2 GetPlotCoordinate(BuildingPlot plot)
     {
-        int x = Mathf.FloorToInt(gameObject.transform.position.z);
-        int y = Mathf.FloorToInt(gameObject.transform.position.x);
-        int width = (int)mapSize.x;
+        float x = gameObject.transform.position.z * 2 + 0.5f;
+        float y = gameObject.transform.position.x * 2 + 0.5f;
 
-        int centre = (y * width * 9) + width * 3 + x * 3 + 1;
-
-        return new Vector2(centre + plot.gameObject.transform.position.z * 3,
-                           centre + plot.gameObject.transform.position.x * 3);
+        return new Vector2(x + plot.gameObject.transform.localPosition.z * 2,
+                           y + plot.gameObject.transform.localPosition.x * 2);
     }
 
     public void SetMapSize (Vector2 _mapSize)
     {
         mapSize = _mapSize;
-    }
-
-    void Start()
-    {
-        
-        
-    }
-    
-    void Update()
-    {
-        
     }
     
     #region ">> Valid tile accessor functions"

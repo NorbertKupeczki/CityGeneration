@@ -97,6 +97,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  validTiles: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b000000
+  validTiles: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c000000
   entrophy: 0
   solved: 0
+  northNeighbour: {fileID: 0}
+  westNeighbour: {fileID: 0}
+  southNeighbour: {fileID: 0}
+  eastNeighbour: {fileID: 0}
