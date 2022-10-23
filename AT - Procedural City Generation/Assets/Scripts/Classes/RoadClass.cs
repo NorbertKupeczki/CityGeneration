@@ -44,7 +44,7 @@ public class RoadClass : MonoBehaviour
 
     private int ConvertToLevels(float noiseValue)
     {
-        return Mathf.FloorToInt(noiseValue * maxBuildingHeight) + 1;
+        return Mathf.FloorToInt(noiseValue * (maxBuildingHeight - 1)) + 2;
     }
 
     private Vector2 GetPlotCoordinate(BuildingPlot plot)
