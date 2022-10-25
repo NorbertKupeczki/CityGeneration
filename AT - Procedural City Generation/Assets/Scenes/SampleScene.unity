@@ -496,6 +496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77bf26d0d8b001843ade1614edef01b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  park: {fileID: 3481929485487684611, guid: 8eed767ffcf751645985591b565f6315, type: 3}
   _residentialSmall:
   - {fileID: 852359078213203372, guid: 3a879b41098156b478eb247ae12f65ed, type: 3}
   - {fileID: 3309999203994916343, guid: a529345c8c41ed544837027869677093, type: 3}

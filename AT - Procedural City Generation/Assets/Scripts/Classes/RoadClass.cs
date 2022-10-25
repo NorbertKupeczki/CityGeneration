@@ -38,7 +38,7 @@ public class RoadClass : MonoBehaviour
     {
         gameObject.name = _name + " (" + gameObject.transform.position.x + ":" + gameObject.transform.position.z + ")";
         perlinGenerator = FindObjectOfType<PerlinGenerator>();
-        GenerateBuildings();
+        //GenerateBuildings();
     }
 
     private void GenerateBuildings()

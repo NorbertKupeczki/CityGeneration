@@ -7,14 +7,12 @@ public class LargePlot : MonoBehaviour
     [SerializeField] BuildingsData.PlotType _plotType = BuildingsData.PlotType.UNDEFINED;
     [SerializeField] int _landSize = 0;
     [SerializeField] List<GameObject> _buildingPlots;
-    [SerializeField] List<GameObject> _buildVolumes = null;
+    //[SerializeField] List<GameObject> _buildVolumes = null;
 
-    // CODE FOR TESTING
-    private Color color;
 
     private void Awake()
     {
-        color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
+        _plotType = (BuildingsData.PlotType)Random.Range(1, 5);
     }
 
     public void AddBuildingPlot(GameObject _newPlot)
@@ -26,12 +24,29 @@ public class LargePlot : MonoBehaviour
     {
         foreach (GameObject _plot in _buildingPlots)
         {
+            _landSize = _buildingPlots.Count;
+
             _plot.GetComponent<BuildingPlot>().SetLinkingState(BuildingsData.PlotLinking.COMPLETED);
+            _plot.GetComponent<BuildingPlot>().SetPlotType(_plotType);
+            _plot.GetComponent<BuildingPlot>().Build(1);
         }
     }
 
     public bool CheckPlotInList(GameObject plot)
     {
         return _buildingPlots.Contains(plot);
+    }
+
+    private void ApplyPlotType()
+    {
+        foreach (GameObject plot in _buildingPlots)
+        {
+            plot.GetComponent<BuildingPlot>().SetPlotType(_plotType);
+        }
+    }
+
+    public int GetLandSize()
+    {
+        return _landSize;
     }
 }

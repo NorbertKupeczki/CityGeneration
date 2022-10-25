@@ -4,6 +4,7 @@ using UnityEngine;
 public class BuildingManager : MonoBehaviour
 {
     [Header("Building Prefabs")]
+    [SerializeField] GameObject park;
     [SerializeField] List<GameObject> _residentialSmall = new List<GameObject>();
     [SerializeField] GameObject _largePlot;
 
@@ -16,6 +17,11 @@ public class BuildingManager : MonoBehaviour
     public GameObject GetBuildingBlock(BuildingsData.BuildingLevel level)
     {
         return _residentialSmall[(int)level];
+    }
+
+    public GameObject GetParkTile ()
+    {
+        return park;
     }
 
     public void SetPlotsSize (int width, int height)
@@ -111,6 +117,7 @@ public class BuildingManager : MonoBehaviour
                 {
                     plotA.GetComponent<BuildingPlot>().SetNorth(plotB);
                     plotB.GetComponent<BuildingPlot>().SetSouth(plotA);
+                    AddPlotToLargePlot(plotB, largePlot);
                 }
                 break;
             case BuildingsData.Direction.WEST:
@@ -118,6 +125,7 @@ public class BuildingManager : MonoBehaviour
                 {
                     plotA.GetComponent<BuildingPlot>().SetWest(plotB);
                     plotB.GetComponent<BuildingPlot>().SetEast(plotA);
+                    AddPlotToLargePlot(plotB, largePlot);
                 }
                 break;
             case BuildingsData.Direction.SOUTH:
@@ -125,6 +133,7 @@ public class BuildingManager : MonoBehaviour
                 {
                     plotA.GetComponent<BuildingPlot>().SetSouth(plotB);
                     plotB.GetComponent<BuildingPlot>().SetNorth(plotA);
+                    AddPlotToLargePlot(plotB, largePlot);
                 }
                 break;
             case BuildingsData.Direction.EAST:
@@ -132,15 +141,11 @@ public class BuildingManager : MonoBehaviour
                 {
                     plotA.GetComponent<BuildingPlot>().SetEast(plotB);
                     plotB.GetComponent<BuildingPlot>().SetWest(plotA);
+                    AddPlotToLargePlot(plotB, largePlot);
                 }
                 break;
             default:
                 break;
-        }
-
-        if (!largePlot.CheckPlotInList(plotB))
-        {
-            largePlot.AddBuildingPlot(plotB);
         }
     }
 
@@ -149,6 +154,14 @@ public class BuildingManager : MonoBehaviour
         if (_allPlots[CoordsToPlot(x, y)].GetComponent<BuildingPlot>().IsNotLinked())
         {
             FindNeighbours(x, y, largePlot);
+        }
+    }
+
+    private void AddPlotToLargePlot(GameObject plot, LargePlot largePlot)
+    {
+        if (!largePlot.CheckPlotInList(plot))
+        {
+            largePlot.AddBuildingPlot(plot);
         }
     }
 }

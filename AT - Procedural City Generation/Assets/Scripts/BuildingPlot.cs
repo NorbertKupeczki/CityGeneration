@@ -4,6 +4,8 @@ public class BuildingPlot : MonoBehaviour
 {
     [SerializeField] GameObject buildingBlock;
     [SerializeField] float scaleFactor;
+    [SerializeField] float curbHeight = 0.02f;
+    [SerializeField] BuildingsData.PlotType plotType = BuildingsData.PlotType.UNDEFINED;
 
     private BuildingManager manager;
 
@@ -21,7 +23,29 @@ public class BuildingPlot : MonoBehaviour
 
     public void Build(int levels)
     {
-        for (int i = 0; i < levels; i++)
+        switch (plotType)
+        {
+            case BuildingsData.PlotType.UNDEFINED:
+                break;
+            case BuildingsData.PlotType.RESIDENTIAL:
+                BuildTestBlock(levels, Color.green);
+                break;
+            case BuildingsData.PlotType.COMMERCIAL:
+                BuildTestBlock(levels, Color.blue);
+                break;
+            case BuildingsData.PlotType.INDUSTRIAL:
+                BuildTestBlock(levels, Color.yellow);
+                break;
+            case BuildingsData.PlotType.PARK:
+                Instantiate(manager.GetParkTile(),
+                        new Vector3(gameObject.transform.position.x, gameObject.transform.localPosition.y, gameObject.transform.position.z),
+                        Quaternion.Euler(new Vector3(gameObject.transform.rotation.x, 90 * Random.Range(0, 5) ,gameObject.transform.rotation.z)));
+                break;
+            default:
+                break;
+        }
+
+        /*for (int i = 0; i < levels; i++)
         {
             if (i == 0)
             {
@@ -39,16 +63,20 @@ public class BuildingPlot : MonoBehaviour
             Instantiate(buildingBlock,
                         new Vector3(gameObject.transform.position.x, gameObject.transform.localScale.y * i * 0.5f * scaleFactor, gameObject.transform.position.z),
                         Quaternion.identity);
-        }
+        }*/
+    }
 
-        /*GameObject building = Instantiate(buildingBlock,
+    private void BuildTestBlock(int levels, Color colour)
+    {
+        GameObject building = Instantiate(buildingBlock,
                               new Vector3 (gameObject.transform.position.x,
-                                           gameObject.transform.localScale.y * (levels * 0.5f) * scaleFactor,
+                                           gameObject.transform.localScale.y * (levels * 0.5f) * scaleFactor + curbHeight,
                                            gameObject.transform.position.z),
                               Quaternion.identity);
         building.transform.localScale = new Vector3 (building.transform.localScale.x,
                                                      building.transform.localScale.y * levels,
-                                                     building.transform.localScale.z);*/
+                                                     building.transform.localScale.z);
+        building.GetComponent<Renderer>().material.color = colour;
     }
 
     public bool IsNotLinked()
@@ -104,5 +132,10 @@ public class BuildingPlot : MonoBehaviour
             default:
                 return false;
         }
+    }
+
+    public void SetPlotType (BuildingsData.PlotType newType)
+    {
+        plotType = newType;
     }
 }
