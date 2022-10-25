@@ -245,6 +245,7 @@ public class RoadNetworkManager : MonoBehaviour
             {
                 PropogateToTile(tileScript.GetNorthNeighbour(), tile.GetComponent<RoadClass>().GetNorth());
                 ShortlistTile(tileScript.GetNorthNeighbour());
+                tileScript.GetNorthNeighbour().GetComponent<WFC_Tile>().Propogate();
             }
         }
 
@@ -255,6 +256,7 @@ public class RoadNetworkManager : MonoBehaviour
             {
                 PropogateToTile(tileScript.GetSouthNeighbour(), tile.GetComponent<RoadClass>().GetSouth());
                 ShortlistTile(tileScript.GetSouthNeighbour());
+                tileScript.GetSouthNeighbour().GetComponent<WFC_Tile>().Propogate();
             }
         }
 
@@ -265,6 +267,7 @@ public class RoadNetworkManager : MonoBehaviour
             {
                 PropogateToTile(tileScript.GetWestNeighbour(), tile.GetComponent<RoadClass>().GetWest());
                 ShortlistTile(tileScript.GetWestNeighbour());
+                tileScript.GetWestNeighbour().GetComponent<WFC_Tile>().Propogate();
             }
         }
 
@@ -275,6 +278,7 @@ public class RoadNetworkManager : MonoBehaviour
             {
                 PropogateToTile(tileScript.GetEastNeighbour(), tile.GetComponent<RoadClass>().GetEast());
                 ShortlistTile(tileScript.GetEastNeighbour());
+                tileScript.GetEastNeighbour().GetComponent<WFC_Tile>().Propogate();
             }
         }
     }
@@ -285,7 +289,7 @@ public class RoadNetworkManager : MonoBehaviour
         tileScript.Collapse(GetInvalidTiles(_validTiles));
     }
 
-    private void ShortlistTile(GameObject tile)
+    public void ShortlistTile(GameObject tile)
     {
         if (!shortlistedTiles.Contains(tile))
         {
@@ -303,7 +307,7 @@ public class RoadNetworkManager : MonoBehaviour
         }
     }
 
-    private List<int> GetInvalidTiles(List<int> validTiles)
+    public List<int> GetInvalidTiles(List<int> validTiles)
     {
         List<int> invalidTiles = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
@@ -313,5 +317,24 @@ public class RoadNetworkManager : MonoBehaviour
         }
 
         return invalidTiles;
+    }
+
+    public List<int> GetValidTilesByID(int ID, BuildingsData.Direction direction)
+    {
+        switch (direction)
+        {
+            case BuildingsData.Direction.NORTH:
+                return tiles[ID].GetComponent<RoadClass>().GetNorth();
+            case BuildingsData.Direction.WEST:
+                return tiles[ID].GetComponent<RoadClass>().GetWest();
+            case BuildingsData.Direction.SOUTH:
+                return tiles[ID].GetComponent<RoadClass>().GetSouth();
+            case BuildingsData.Direction.EAST:
+                return tiles[ID].GetComponent<RoadClass>().GetEast();
+            default:
+                return new List<int>() { };
+        }
+
+        
     }
 }

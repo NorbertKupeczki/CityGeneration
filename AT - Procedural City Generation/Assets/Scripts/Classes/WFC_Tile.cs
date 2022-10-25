@@ -17,9 +17,11 @@ public class WFC_Tile : MonoBehaviour
     [SerializeField] GameObject eastNeighbour;
 
     private Vector2 mapSize;
+    private RoadNetworkManager roadManager;
 
     private void Awake()
     {
+        roadManager = FindObjectOfType<RoadNetworkManager>();
         entrophy = validTiles.Count;
     }
 
@@ -93,14 +95,87 @@ public class WFC_Tile : MonoBehaviour
         }
     }
 
-    public void Collapse(List<int> _list)
+    public void Collapse(List<int> invalidTiles)
     {
-        foreach (int item in _list)
+        foreach (int item in invalidTiles)
         {
             validTiles.Remove(item);
         }
 
         entrophy = validTiles.Count;
+    }
+
+    public void Propogate()
+    {
+        PropogateToDirection(BuildingsData.Direction.NORTH);
+        PropogateToDirection(BuildingsData.Direction.EAST);
+        PropogateToDirection(BuildingsData.Direction.SOUTH);
+        PropogateToDirection(BuildingsData.Direction.WEST);
+    }
+
+    public void PropogateToDirection(BuildingsData.Direction direction)
+    {
+        if (HasNeighbour(direction))
+        {
+            List<int> validToPropogate = new List<int>() { };
+
+            foreach (int tile in validTiles)
+            {
+                List<int> validTileIDs = roadManager.GetValidTilesByID(tile, direction);
+                for (int i = 0; i < validTileIDs.Count; ++i)
+                {
+                    if (!validToPropogate.Contains(validTileIDs[i]))
+                    {
+                        validToPropogate.Add(validTileIDs[i]);
+                    }
+                }
+            }
+
+            List<int> invalidToPropogate = new List<int>() { };
+            invalidToPropogate.AddRange(roadManager.GetInvalidTiles(validToPropogate));
+
+            if (invalidToPropogate.Count > 0)
+            {
+                switch (direction)
+                {
+                    case BuildingsData.Direction.NORTH:
+                        GetNorthNeighbour().GetComponent<WFC_Tile>().Collapse(invalidToPropogate);
+                        roadManager.ShortlistTile(GetNorthNeighbour());
+                        break;
+                    case BuildingsData.Direction.WEST:
+                        GetWestNeighbour().GetComponent<WFC_Tile>().Collapse(invalidToPropogate);
+                        roadManager.ShortlistTile(GetWestNeighbour());
+                        break;
+                    case BuildingsData.Direction.SOUTH:
+                        GetSouthNeighbour().GetComponent<WFC_Tile>().Collapse(invalidToPropogate);
+                        roadManager.ShortlistTile(GetSouthNeighbour());
+                        break;
+                    case BuildingsData.Direction.EAST:
+                        GetEastNeighbour().GetComponent<WFC_Tile>().Collapse(invalidToPropogate);
+                        roadManager.ShortlistTile(GetEastNeighbour());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    public bool HasNeighbour(BuildingsData.Direction direction)
+    {
+        switch (direction)
+        {
+            case BuildingsData.Direction.NORTH:
+                return GetNorthNeighbour() != null;
+            case BuildingsData.Direction.WEST:
+                return GetWestNeighbour() != null;
+            case BuildingsData.Direction.SOUTH:
+                return GetSouthNeighbour() != null;
+            case BuildingsData.Direction.EAST:
+                return GetEastNeighbour() != null;
+            default:
+                return false;
+        }
     }
 
     #region ">> Neighbour Setters"
