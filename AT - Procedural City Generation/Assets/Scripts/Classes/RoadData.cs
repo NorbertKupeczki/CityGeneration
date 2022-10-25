@@ -3,27 +3,27 @@ using UnityEngine;
 
 public static class RoadData
 {
-    static IDictionary<int, float> RoadWeights = new Dictionary<int, float>()
+    static IDictionary<int, int> RoadWeights = new Dictionary<int, int>()
     {
-        { 0,  1.0f }, // Empty
-        { 1,  4.5f }, // Road, Horizontal S
-        { 2,  4.5f }, // Road, Horizontal N
-        { 3,  4.5f }, // Road, Vertical E
-        { 4,  4.5f }, // Road, Vertical W
-        { 5,  3.5f }, // Curve, SE
-        { 6,  3.5f }, // Curve, SW
-        { 7,  3.5f }, // Curve, NW
-        { 8,  3.5f }, // Curve, NE
-        { 9,  0.2f }, // Corner, SE
-        { 10, 0.2f }, // Corner, SW
-        { 11, 0.2f }, // Corner, NW
-        { 12, 0.2f }, // Corner, NE
+        { 0,  1 }, // Empty
+        { 1,  25 }, // Road, Horizontal S
+        { 2,  25 }, // Road, Horizontal N
+        { 3,  25 }, // Road, Vertical E
+        { 4,  25 }, // Road, Vertical W
+        { 5,  25 }, // Curve, SE
+        { 6,  25 }, // Curve, SW
+        { 7,  25 }, // Curve, NW
+        { 8,  25 }, // Curve, NE
+        { 9,  3 }, // Corner, SE
+        { 10, 3 }, // Corner, SW
+        { 11, 3 }, // Corner, NW
+        { 12, 3 }, // Corner, NE
     };
 
     public static int GetWeightedRoadIndex(List<int> _indices)
     {
         List<WeightPairs> weightedValues = new List<WeightPairs>();
-        float sumWeight = 0.0f;
+        int sumWeight = 0;
 
         foreach (int index in _indices)
         {
@@ -31,7 +31,7 @@ public static class RoadData
             weightedValues.Add(new WeightPairs(index,sumWeight));
         }
 
-        float rnd = Random.Range(0.0f, sumWeight);
+        int rnd = Random.Range(0, sumWeight);
 
         foreach (WeightPairs weightedPair in weightedValues)
         {
@@ -47,9 +47,9 @@ public static class RoadData
     struct WeightPairs
     {
         public int idx;
-        public float weight;
+        public int weight;
 
-        public WeightPairs(int _idx, float weight) : this()
+        public WeightPairs(int _idx, int weight) : this()
         {
             this.idx = _idx;
             this.weight = weight;
