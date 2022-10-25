@@ -24,10 +24,15 @@ public class RoadNetworkManager : MonoBehaviour
     [SerializeField] int width;
     [SerializeField] int height;
 
+    private BuildingManager buildingManager;
+
     private void Awake()
     {
         PerlinGenerator perlinGenerator = FindObjectOfType<PerlinGenerator>();
         perlinGenerator.SetMapSize(width, height);
+
+        buildingManager = FindObjectOfType<BuildingManager>();
+        buildingManager.SetPlotsSize(width * 2, height * 2);
     }
 
     void Start()
@@ -48,6 +53,8 @@ public class RoadNetworkManager : MonoBehaviour
             default:
                 break;
         }
+
+        buildingManager.CreateLargePlots();
     }
 
     // Update is called once per frame

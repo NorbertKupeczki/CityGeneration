@@ -19,9 +19,19 @@ public class RoadClass : MonoBehaviour
     [SerializeField] private PerlinGenerator perlinGenerator;
     [SerializeField] uint maxBuildingHeight = 5;
 
+    private BuildingManager buildingManager;
+
     void Awake()
     {
-        
+        buildingManager = FindObjectOfType<BuildingManager>();
+
+        BuildingPlot[] buildingPlots = gameObject.GetComponentsInChildren<BuildingPlot>();
+        foreach (BuildingPlot _buildingPlot in buildingPlots)
+        {
+            int x = Mathf.RoundToInt(GetPlotCoordinate(_buildingPlot).x);
+            int y = Mathf.RoundToInt(GetPlotCoordinate(_buildingPlot).y);
+            buildingManager.AddPlot(x, y, _buildingPlot.gameObject);
+        }
     }
 
     void Start()
