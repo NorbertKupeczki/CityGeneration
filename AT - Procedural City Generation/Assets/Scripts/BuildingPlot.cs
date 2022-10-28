@@ -6,6 +6,7 @@ public class BuildingPlot : MonoBehaviour
     [SerializeField] float scaleFactor;
     [SerializeField] float curbHeight = 0.02f;
     [SerializeField] BuildingsData.PlotType plotType = BuildingsData.PlotType.UNDEFINED;
+    [SerializeField] Vector2 worldCoord;
 
     private BuildingManager manager;
 
@@ -19,6 +20,7 @@ public class BuildingPlot : MonoBehaviour
     private void Awake()
     {
         manager = FindObjectOfType<BuildingManager>();
+        worldCoord = new Vector2(gameObject.transform.position.z, gameObject.transform.position.x);
     }
 
     public void Build(int levels)

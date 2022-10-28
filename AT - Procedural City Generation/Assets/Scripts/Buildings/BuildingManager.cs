@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ public class BuildingManager : MonoBehaviour
     [SerializeField] int _plotsHeight;
     [SerializeField] List<GameObject> _allPlots;
     [SerializeField] List<GameObject> _largePlots;
+    [SerializeField] int _totalBuildingPlots = 0;
 
     public GameObject GetBuildingBlock(BuildingsData.BuildingLevel level)
     {
@@ -56,6 +58,8 @@ public class BuildingManager : MonoBehaviour
         GameObject newLargePlot = Instantiate(_largePlot);
         _largePlots.Add(newLargePlot);
 
+        newLargePlot.GetComponent<LargePlot>().SetCentreOfCity(_plotsWidth, _plotsHeight);
+
         return newLargePlot;
     }
 
@@ -71,10 +75,12 @@ public class BuildingManager : MonoBehaviour
 
                     newLargePlot.AddBuildingPlot(_allPlots[CoordsToPlot(x, y)]);
                     FindNeighbours(x, y, newLargePlot);
-                    newLargePlot.SetPlotsToComplete();
+                    _totalBuildingPlots += newLargePlot.SetPlotsToComplete();
                 }
             }
         }
+
+        SortLargePlotsByDistance();
     }
 
     private void FindNeighbours(int _x, int _y, LargePlot largePlot)
@@ -162,6 +168,63 @@ public class BuildingManager : MonoBehaviour
         if (!largePlot.CheckPlotInList(plot))
         {
             largePlot.AddBuildingPlot(plot);
+        }
+    }
+
+    private void SortLargePlotsByDistance()
+    {
+        
+        _largePlots.Sort(delegate (GameObject a, GameObject b) {
+            return (a.GetComponent<LargePlot>().GetDistanceFromCentre()).CompareTo(b.GetComponent<LargePlot>().GetDistanceFromCentre());
+        });
+        
+    }
+
+    public void CreateZones()
+    {
+        int numberOfParks = 2;
+        int totalCommercialPlots = 0;
+        int counter = 0;
+
+        _largePlots.Last().GetComponent<LargePlot>().ApplyPlotType(BuildingsData.PlotType.INDUSTRIAL);
+
+        foreach (GameObject _largePlot in _largePlots)
+        {            
+            LargePlot plot = _largePlot.GetComponent<LargePlot>();
+            if (plot.IsUndefinedPlotType())
+            {
+                switch (counter % 3)
+                {
+                    case 0:
+                        if (totalCommercialPlots < _totalBuildingPlots * 0.33f)
+                        {
+                            plot.ApplyPlotType(BuildingsData.PlotType.COMMERCIAL);
+                            totalCommercialPlots += plot.GetLandSize();
+                        }
+                        else
+                        {
+                            plot.ApplyPlotType(BuildingsData.PlotType.RESIDENTIAL);
+                        }
+                        break;
+                    case 1:
+                        if (numberOfParks > 0)
+                        {
+                            plot.ApplyPlotType(BuildingsData.PlotType.PARK);
+                            --numberOfParks;
+                        }
+                        else
+                        {
+                            plot.ApplyPlotType(BuildingsData.PlotType.RESIDENTIAL);
+                        }
+                        break;
+                    case 2:
+                        plot.ApplyPlotType(BuildingsData.PlotType.RESIDENTIAL);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            ++counter;
         }
     }
 }

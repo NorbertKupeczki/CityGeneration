@@ -184,7 +184,7 @@ MonoBehaviour:
   wfcTile: {fileID: 8034772933648498953, guid: 99266baaa05a0544d91b1450759c402c, type: 3}
   wfcTiles: []
   shortlistedTiles: []
-  generationMethod: 1
+  generationMethod: 2
   width: 20
   height: 20
 --- !u!1 &705507993
