@@ -5,7 +5,7 @@ public static class RoadData
 {
     static IDictionary<int, int> RoadWeights = new Dictionary<int, int>()
     {
-        { 0,  1 }, // Empty
+        { 0,  3 }, // Empty
         { 1,  50 }, // Road, Horizontal S
         { 2,  50 }, // Road, Horizontal N
         { 3,  50 }, // Road, Vertical E
@@ -18,6 +18,7 @@ public static class RoadData
         { 10, 5 }, // Corner, SW
         { 11, 5 }, // Corner, NW
         { 12, 5 }, // Corner, NE
+        { 13, 0 }, // Roundabout
     };
 
     public static int GetWeightedRoadIndex(List<int> _indices)

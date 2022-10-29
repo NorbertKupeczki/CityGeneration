@@ -362,6 +362,7 @@ public class RoadNetworkManager : MonoBehaviour
             if (i < width - 1)
             {
                 edgeTileScript.Collapse(new List<int> { 2, 7, 8, 11, 12 });
+                //edgeTileScript.Collapse(new List<int> { 2, 3, 4, 5, 6, 7, 8, 11, 12 });
                 edgeTileScript.PropogateToDirection(BuildingsData.Direction.SOUTH);
                 edgeTileScript = edgeTileScript.GetEastNeighbour().GetComponent<WFC_Tile>();
             }
@@ -377,6 +378,7 @@ public class RoadNetworkManager : MonoBehaviour
             if (i < height - 1)
             {
                 edgeTileScript.Collapse(new List<int> { 3, 5, 8, 9, 12 });
+                //edgeTileScript.Collapse(new List<int> { 1, 2, 3, 5, 6, 7, 8, 9, 12 });
                 edgeTileScript.PropogateToDirection(BuildingsData.Direction.WEST);
                 edgeTileScript = edgeTileScript.GetSouthNeighbour().GetComponent<WFC_Tile>();
             }
@@ -391,6 +393,7 @@ public class RoadNetworkManager : MonoBehaviour
             if (i < width - 1)
             {
                 edgeTileScript.Collapse(new List<int> { 1, 5, 6, 9, 10 });
+                //edgeTileScript.Collapse(new List<int> { 1, 3, 4, 5, 6, 7, 8, 9, 10 });
                 edgeTileScript.PropogateToDirection(BuildingsData.Direction.NORTH);
                 edgeTileScript = edgeTileScript.GetWestNeighbour().GetComponent<WFC_Tile>();
             }
@@ -404,6 +407,7 @@ public class RoadNetworkManager : MonoBehaviour
         for (int i = 1; i < height -1; ++i)
         {
             edgeTileScript.Collapse(new List<int> { 4, 6, 7, 10, 11 });
+            //edgeTileScript.Collapse(new List<int> { 1, 2, 4, 5, 6, 7, 8, 10, 11 });
             edgeTileScript.PropogateToDirection(BuildingsData.Direction.EAST);
             edgeTileScript = edgeTileScript.GetNorthNeighbour().GetComponent<WFC_Tile>();            
         }

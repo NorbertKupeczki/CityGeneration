@@ -16,6 +16,11 @@ public class BuildingManager : MonoBehaviour
     [SerializeField] List<GameObject> _largePlots;
     [SerializeField] int _totalBuildingPlots = 0;
 
+    [Header("Zone Rules")]
+    [SerializeField] float _industrialZoneRate = 0.15f;
+    [SerializeField] float _commercialZoneRate = 0.33f;
+    [SerializeField] int _numberOfParks = 2;
+
     public GameObject GetBuildingBlock(BuildingsData.BuildingLevel level)
     {
         return _residentialSmall[(int)level];
@@ -182,29 +187,32 @@ public class BuildingManager : MonoBehaviour
 
     public void CreateZones()
     {
-        int numberOfParks = 2;
+        int numberOfParks = _numberOfParks;
         int totalCommercialPlots = 0;
+        int totalIndustrialPlots = 0;
         int counter = 0;
 
-        _largePlots.Last().GetComponent<LargePlot>().ApplyPlotType(BuildingsData.PlotType.INDUSTRIAL);
+        for (int i = (_largePlots.Count - 1); totalIndustrialPlots < _totalBuildingPlots * _industrialZoneRate; --i)
+        {
+            _largePlots[i].GetComponent<LargePlot>().ApplyPlotType(BuildingsData.PlotType.INDUSTRIAL);
+            totalIndustrialPlots += _largePlots[i].GetComponent<LargePlot>().GetLandSize();
+        }
+
+        for (int i = 0; totalCommercialPlots < _totalBuildingPlots * _commercialZoneRate; ++i)
+        {
+            _largePlots[i].GetComponent<LargePlot>().ApplyPlotType(BuildingsData.PlotType.COMMERCIAL);
+            totalCommercialPlots += _largePlots[i].GetComponent<LargePlot>().GetLandSize();
+        }
 
         foreach (GameObject _largePlot in _largePlots)
         {            
             LargePlot plot = _largePlot.GetComponent<LargePlot>();
             if (plot.IsUndefinedPlotType())
             {
-                switch (counter % 3)
+                switch (counter % 2)
                 {
                     case 0:
-                        if (totalCommercialPlots < _totalBuildingPlots * 0.33f)
-                        {
-                            plot.ApplyPlotType(BuildingsData.PlotType.COMMERCIAL);
-                            totalCommercialPlots += plot.GetLandSize();
-                        }
-                        else
-                        {
-                            plot.ApplyPlotType(BuildingsData.PlotType.RESIDENTIAL);
-                        }
+                        plot.ApplyPlotType(BuildingsData.PlotType.RESIDENTIAL);
                         break;
                     case 1:
                         if (numberOfParks > 0)
@@ -216,9 +224,6 @@ public class BuildingManager : MonoBehaviour
                         {
                             plot.ApplyPlotType(BuildingsData.PlotType.RESIDENTIAL);
                         }
-                        break;
-                    case 2:
-                        plot.ApplyPlotType(BuildingsData.PlotType.RESIDENTIAL);
                         break;
                     default:
                         break;

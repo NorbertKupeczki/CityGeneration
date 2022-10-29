@@ -181,6 +181,7 @@ MonoBehaviour:
   - {fileID: 3162101514417772266, guid: 0e9bf48f275ab2a4088292af36c3bbb5, type: 3}
   - {fileID: 2749454603403196813, guid: 5117f27ab4389ce4b83a90dee1244ece, type: 3}
   - {fileID: 4370931905434962112, guid: f1d3dc14f31b706439399401e6639e48, type: 3}
+  - {fileID: 7420172348776919482, guid: fd62c27691f97cb4299eba74a6eb12a0, type: 3}
   wfcTile: {fileID: 8034772933648498953, guid: 99266baaa05a0544d91b1450759c402c, type: 3}
   wfcTiles: []
   shortlistedTiles: []
@@ -506,6 +507,10 @@ MonoBehaviour:
   _plotsHeight: 0
   _allPlots: []
   _largePlots: []
+  _totalBuildingPlots: 0
+  _industrialZoneRate: 0.15
+  _commercialZoneRate: 0.25
+  _numberOfParks: 3
 --- !u!4 &1957535695
 Transform:
   m_ObjectHideFlags: 0
