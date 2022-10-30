@@ -151,7 +151,7 @@ public class RoadNetworkManager : MonoBehaviour
                                       Quaternion.identity);
 
         Propogate(tileScript, tile);
-
+        tile.transform.SetParent(gameObject.transform);
         tileScript.SetSolved();
 
         wfcTiles.Remove(_wfcTile);

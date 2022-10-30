@@ -79,6 +79,7 @@ public class BuildingManager : MonoBehaviour
                     LargePlot newLargePlot = NewLargePlot().GetComponent<LargePlot>();
 
                     newLargePlot.AddBuildingPlot(_allPlots[CoordsToPlot(x, y)]);
+                    newLargePlot.transform.SetParent(gameObject.transform);
                     FindNeighbours(x, y, newLargePlot);
                     _totalBuildingPlots += newLargePlot.SetPlotsToComplete();
                 }

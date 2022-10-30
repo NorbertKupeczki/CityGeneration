@@ -39,9 +39,10 @@ public class BuildingPlot : MonoBehaviour
                 BuildTestBlock(levels, Color.yellow);
                 break;
             case BuildingsData.PlotType.PARK:
-                Instantiate(manager.GetParkTile(),
-                        new Vector3(gameObject.transform.position.x, gameObject.transform.localPosition.y, gameObject.transform.position.z),
-                        Quaternion.Euler(new Vector3(gameObject.transform.rotation.x, 90 * Random.Range(0, 5) ,gameObject.transform.rotation.z)));
+                GameObject park = Instantiate(manager.GetParkTile(),
+                                  new Vector3(gameObject.transform.position.x, gameObject.transform.localPosition.y, gameObject.transform.position.z),
+                                  Quaternion.Euler(new Vector3(gameObject.transform.rotation.x, 90 * Random.Range(0, 5) ,gameObject.transform.rotation.z)));
+                park.transform.SetParent(gameObject.transform);
                 break;
             default:
                 break;
@@ -78,6 +79,7 @@ public class BuildingPlot : MonoBehaviour
         building.transform.localScale = new Vector3 (building.transform.localScale.x,
                                                      building.transform.localScale.y * levels,
                                                      building.transform.localScale.z);
+        building.transform.SetParent(gameObject.transform);
         building.GetComponent<Renderer>().material.color = colour;
     }
 
