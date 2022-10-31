@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingPlot : MonoBehaviour
@@ -16,6 +17,11 @@ public class BuildingPlot : MonoBehaviour
     [SerializeField] GameObject west;
     [SerializeField] GameObject south;
     [SerializeField] GameObject east;
+
+    [Header("Build Volume")]
+    [SerializeField] GameObject buildVolume;
+    [SerializeField] int maxHeight = 3;
+    [SerializeField] List<GameObject> buildVolumes = new List<GameObject> { };
 
     private void Awake()
     {
@@ -141,5 +147,126 @@ public class BuildingPlot : MonoBehaviour
     public void SetPlotType (BuildingsData.PlotType newType)
     {
         plotType = newType;
+    }
+
+    public void SetMaxHeight(int value)
+    {
+        maxHeight = value;
+    }
+
+    public List<GameObject> GetBuildVolumes()
+    {
+        return buildVolumes;
+    }
+
+    public void CreateBuildVolume()
+    {
+        for (int i = 0; i < maxHeight; ++i)
+        {
+            buildVolumes.Add(Instantiate(buildVolume, new Vector3(gameObject.transform.position.x, i * 0.5f, gameObject.transform.position.z), Quaternion.identity));
+            buildVolumes[i].transform.SetParent(gameObject.transform);
+            if (i > 0)
+            {
+                LinkVolumes(buildVolumes[i].GetComponent<BuildVolume>(), BuildingsData.Direction3D.DOWN, buildVolumes[i - 1].GetComponent<BuildVolume>());
+            }
+        }
+    }
+    
+    public void LinkVolumes()
+    {
+        if(north != null)
+        {
+            LinkVolumesWithNeighbour(BuildingsData.Direction.NORTH);
+        }
+        if (west != null)
+        {
+            LinkVolumesWithNeighbour(BuildingsData.Direction.WEST);
+        }
+        if (south != null)
+        {
+            LinkVolumesWithNeighbour(BuildingsData.Direction.SOUTH);
+        }
+        if (east != null)
+        {
+            LinkVolumesWithNeighbour(BuildingsData.Direction.EAST);
+        }
+    }
+
+    private void LinkVolumes (BuildVolume a, BuildingsData.Direction3D direction, BuildVolume b)
+    {
+        if (!a.HasNeighbour(direction))
+        {
+            switch (direction)
+            {
+                case BuildingsData.Direction3D.NORTH:
+                    a.SetNorth(b.gameObject);
+                    b.SetSouth(a.gameObject);
+                    break;
+                case BuildingsData.Direction3D.WEST:
+                    a.SetWest(b.gameObject);
+                    b.SetEast(a.gameObject);
+                    break;
+                case BuildingsData.Direction3D.SOUTH:
+                    a.SetSouth(b.gameObject);
+                    b.SetNorth(a.gameObject);
+                    break;
+                case BuildingsData.Direction3D.EAST:
+                    a.SetEast(b.gameObject);
+                    b.SetWest(a.gameObject);
+                    break;
+                case BuildingsData.Direction3D.UP:
+                    a.SetUp(b.gameObject);
+                    b.SetDown(a.gameObject);
+                    break;
+                case BuildingsData.Direction3D.DOWN:
+                    a.SetDown(b.gameObject);
+                    b.SetUp(a.gameObject);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void LinkVolumesWithNeighbour(BuildingsData.Direction direction)
+    {
+        switch (direction)
+        {
+            case BuildingsData.Direction.NORTH:                
+                List<GameObject> northVolumes = north.GetComponent<BuildingPlot>().GetBuildVolumes();
+                for (int i = 0; i < buildVolumes.Count; ++i)
+                {
+                    LinkVolumes(buildVolumes[i].GetComponent<BuildVolume>(), BuildingsData.Direction3D.NORTH, northVolumes[i].GetComponent<BuildVolume>());
+                }
+                
+                break;
+
+            case BuildingsData.Direction.WEST:
+                List<GameObject> westVolumes = west.GetComponent<BuildingPlot>().GetBuildVolumes();
+                for (int i = 0; i < buildVolumes.Count; ++i)
+                {
+                    LinkVolumes(buildVolumes[i].GetComponent<BuildVolume>(), BuildingsData.Direction3D.WEST, westVolumes[i].GetComponent<BuildVolume>());
+                }
+                break;
+
+            case BuildingsData.Direction.SOUTH:
+                List<GameObject> southVolumes = south.GetComponent<BuildingPlot>().GetBuildVolumes();
+                for (int i = 0; i < buildVolumes.Count; ++i)
+                {
+                    LinkVolumes(buildVolumes[i].GetComponent<BuildVolume>(), BuildingsData.Direction3D.SOUTH, southVolumes[i].GetComponent<BuildVolume>());
+                }
+                break;
+
+            case BuildingsData.Direction.EAST:
+                List<GameObject> eastVolumes = east.GetComponent<BuildingPlot>().GetBuildVolumes();
+                for (int i = 0; i < buildVolumes.Count; ++i)
+                {
+                    LinkVolumes(buildVolumes[i].GetComponent<BuildVolume>(), BuildingsData.Direction3D.EAST, eastVolumes[i].GetComponent<BuildVolume>());
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 }

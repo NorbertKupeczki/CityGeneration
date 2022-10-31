@@ -502,6 +502,7 @@ MonoBehaviour:
   - {fileID: 852359078213203372, guid: 3a879b41098156b478eb247ae12f65ed, type: 3}
   - {fileID: 3309999203994916343, guid: a529345c8c41ed544837027869677093, type: 3}
   - {fileID: 837430980201550076, guid: 0a56ab4c57658d84384365dcc1406a41, type: 3}
+  _testBuildings: []
   _largePlot: {fileID: 7680700645585734583, guid: 981c14504f22be24892b4a001d43d6a0, type: 3}
   _plotsWidth: 0
   _plotsHeight: 0

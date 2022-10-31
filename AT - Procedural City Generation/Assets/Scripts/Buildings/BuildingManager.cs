@@ -7,6 +7,7 @@ public class BuildingManager : MonoBehaviour
     [Header("Building Prefabs")]
     [SerializeField] GameObject park;
     [SerializeField] List<GameObject> _residentialSmall = new List<GameObject>();
+    [SerializeField] List<GameObject> _testBuildings = new List<GameObject>();
     [SerializeField] GameObject _largePlot;
 
     [Header("Construction Management")]
@@ -29,6 +30,11 @@ public class BuildingManager : MonoBehaviour
     public GameObject GetParkTile ()
     {
         return park;
+    }
+
+    public GameObject GetTestBlock(int id)
+    {
+        return _testBuildings[id];
     }
 
     public void SetPlotsSize (int width, int height)
@@ -82,11 +88,16 @@ public class BuildingManager : MonoBehaviour
                     newLargePlot.transform.SetParent(gameObject.transform);
                     FindNeighbours(x, y, newLargePlot);
                     _totalBuildingPlots += newLargePlot.SetPlotsToComplete();
+
+                    // Create build volume
+                    StartCoroutine(newLargePlot.CreateBuildVolume());
                 }
             }
         }
 
         SortLargePlotsByDistance();
+
+        // Start the Wave Function Collapse on each zone
     }
 
     private void FindNeighbours(int _x, int _y, LargePlot largePlot)
@@ -231,6 +242,37 @@ public class BuildingManager : MonoBehaviour
                 }
             }
             ++counter;
+        }
+    }
+    public List<int> GetInvalidBlocks(List<int> validBlocks)
+    {
+        List<int> invalidBlocks = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 99 };
+
+        foreach (int block in validBlocks)
+        {
+            invalidBlocks.Remove(block);
+        }
+
+        return invalidBlocks;
+    }
+    public List<int> GetValidBlocksByID(int id, BuildingsData.Direction3D direction)
+    {
+        switch (direction)
+        {
+            case BuildingsData.Direction3D.NORTH:
+                return _testBuildings[id].GetComponent<BuildingClass>().GetNorth();
+            case BuildingsData.Direction3D.WEST:
+                return _testBuildings[id].GetComponent<BuildingClass>().GetWest();
+            case BuildingsData.Direction3D.SOUTH:
+                return _testBuildings[id].GetComponent<BuildingClass>().GetSouth();
+            case BuildingsData.Direction3D.EAST:
+                return _testBuildings[id].GetComponent<BuildingClass>().GetEast();
+            case BuildingsData.Direction3D.UP:
+                return _testBuildings[id].GetComponent<BuildingClass>().GetAbove();
+            case BuildingsData.Direction3D.DOWN:
+                return _testBuildings[id].GetComponent<BuildingClass>().GetBelow();
+            default:
+                return new List<int>() { };
         }
     }
 }

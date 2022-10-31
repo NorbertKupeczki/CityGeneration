@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4027686361011713834
 MonoBehaviour:
@@ -45,3 +45,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingBlock: {fileID: 1208457341533385525, guid: 019bbbb83d0ce7c4fbd650c5915c8575, type: 3}
+  scaleFactor: 0
+  curbHeight: 0.02
+  plotType: 0
+  worldCoord: {x: 0, y: 0}
+  _plotLink: 0
+  north: {fileID: 0}
+  west: {fileID: 0}
+  south: {fileID: 0}
+  east: {fileID: 0}
+  buildVolume: {fileID: 7785745799885349026, guid: c5a9917d69b56314680b69686a7df7d2, type: 3}
+  maxHeight: 3
+  buildVolumes: []

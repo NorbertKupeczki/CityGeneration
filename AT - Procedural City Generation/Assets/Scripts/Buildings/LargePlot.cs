@@ -96,4 +96,19 @@ public class LargePlot : MonoBehaviour
         Vector2 distanceVector = _centreOfCity - _centreOfLand;
         return distanceVector.magnitude;
     }
+
+    public IEnumerator CreateBuildVolume()
+    {
+        foreach (GameObject plot in _buildingPlots)
+        {
+            plot.GetComponent<BuildingPlot>().CreateBuildVolume();
+        }
+
+        foreach (GameObject plot in _buildingPlots)
+        {
+            plot.GetComponent<BuildingPlot>().LinkVolumes();
+        }
+
+        yield return null;
+    }
 }

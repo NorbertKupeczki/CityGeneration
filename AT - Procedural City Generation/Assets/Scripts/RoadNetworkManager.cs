@@ -257,9 +257,7 @@ public class RoadNetworkManager : MonoBehaviour
                 return tiles[ID].GetComponent<RoadClass>().GetEast();
             default:
                 return new List<int>() { };
-        }
-
-        
+        }        
     }
 
     private void CreateEdgesOld()

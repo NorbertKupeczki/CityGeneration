@@ -268,8 +268,8 @@ MonoBehaviour:
     y: 0
     width: 1142
     height: 573
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 12}
@@ -346,36 +346,36 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts
+    - Assets/Prefabs/WFC
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/Prefabs/WFC
   m_LastFoldersGridSize: -1
   m_LastProjectPath: E:\UWE\Git_repo\AT\CityGeneration\AT - Procedural City Generation
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 565c0000
-    m_LastClickedID: 23638
-    m_ExpandedIDs: 000000003e5c0000405c000000ca9a3b
+    m_SelectedIDs: 525c0000
+    m_LastClickedID: 23634
+    m_ExpandedIDs: 000000003e5c0000405c00004c5c00004e5c000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: Buildings
+      m_OriginalName: Buildings
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: 23630
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 5}
     m_SearchString: 
@@ -519,7 +519,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 34fbffff
+      m_ExpandedIDs: 5e75faff6a75faff7075faff7e75faff7e2ffbff922ffbffdc7dfbffda7ffbff5416fcff6216fcffbe17fcffcc17fcff16effcff2aeffcffee1ffdff244afdff324afdff8a61fdff34fbffff28590000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -801,9 +801,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -23.218603, y: -27.65735, z: -3.4999056}
+    m_Target: {x: 24.37086, y: 6.542587, z: 9.261341}
     speed: 2
-    m_Value: {x: -23.218603, y: -27.65735, z: -3.4999056}
+    m_Value: {x: 24.37086, y: 6.542587, z: 9.261341}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -849,13 +849,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.2692384, y: -0.69935, z: 0.32702258, w: 0.57578534}
+    m_Target: {x: -0.17275952, y: 0.6933238, z: -0.17695859, w: -0.6768652}
     speed: 2
-    m_Value: {x: 0.26923138, y: -0.69933176, z: 0.32701406, w: 0.5757703}
+    m_Value: {x: -0.17275913, y: 0.69332224, z: -0.17695819, w: -0.6768637}
   m_Size:
-    m_Target: 22.299362
+    m_Target: 0.22070058
     speed: 2
-    m_Value: 22.299362
+    m_Value: 0.22070058
   m_Ortho:
     m_Target: 0
     speed: 2

@@ -39,4 +39,14 @@ public static class BuildingsData
         EAST = 3
     }
 
+    public enum Direction3D
+    {
+        NORTH = 0,
+        WEST = 1,
+        SOUTH = 2,
+        EAST = 3,
+        UP = 4,
+        DOWN = 5
+    }
+
 }

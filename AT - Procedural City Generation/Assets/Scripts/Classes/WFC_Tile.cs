@@ -24,17 +24,14 @@ public class WFC_Tile : MonoBehaviour
         roadManager = FindObjectOfType<RoadNetworkManager>();
         entrophy = validTiles.Count;
     }
-
     public int GetEntrophy()
     {
         return entrophy;
     }
-
     public bool IsSolved()
     {
         return solved;
     }
-
     public void SetSolved()
     {
         solved = true;
@@ -57,23 +54,19 @@ public class WFC_Tile : MonoBehaviour
 
         Destroy(gameObject);
     }
-
     public void SetID(int _id)
     {
         id = _id;
         gameObject.name = "WFC_" + id.ToString();
     }
-
     public int GetID()
     {
         return id;
-    }
-
+    }    
     public Vector3 GetPostition()
     {
         return gameObject.transform.position;
     }
-
     public void SetSize(Vector2 size)
     {
         mapSize = size;
