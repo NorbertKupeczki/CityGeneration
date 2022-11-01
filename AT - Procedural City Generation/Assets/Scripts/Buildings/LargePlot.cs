@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class LargePlot : MonoBehaviour
     [SerializeField] int _landSize = 0;
     [SerializeField] Vector2 _centreOfLand;
     [SerializeField] List<GameObject> _buildingPlots;
-    //[SerializeField] List<GameObject> _buildVolumes = null;
+    [SerializeField] int _maxBuildingHeight;
 
     [Header("District Position")]
     [SerializeField] private Vector2 _centreOfCity;
@@ -44,7 +45,7 @@ public class LargePlot : MonoBehaviour
 
         gameObject.transform.position = new Vector3(_centreOfLand.y, 0.0f, _centreOfLand.x);
         _distanceFromCentre = GetDistanceFromCentreOfCity();
-
+        _maxBuildingHeight = CalculateMaxBuildingHeight();
         return GetLandSize();
     }
 
@@ -60,7 +61,7 @@ public class LargePlot : MonoBehaviour
         foreach (GameObject _plot in _buildingPlots)
         {
             _plot.GetComponent<BuildingPlot>().SetPlotType(_plotType);
-            _plot.GetComponent<BuildingPlot>().Build(1);
+            //_plot.GetComponent<BuildingPlot>().Build(_maxBuildingHeight);
         }
     }
 
@@ -97,18 +98,29 @@ public class LargePlot : MonoBehaviour
         return distanceVector.magnitude;
     }
 
-    public IEnumerator CreateBuildVolume()
+    public IEnumerator CreateBuildVolume(Action action)
     {
         foreach (GameObject plot in _buildingPlots)
         {
-            plot.GetComponent<BuildingPlot>().CreateBuildVolume();
+            plot.GetComponent<BuildingPlot>().CreateBuildVolume(_maxBuildingHeight);
+            yield return null;
         }
 
         foreach (GameObject plot in _buildingPlots)
         {
             plot.GetComponent<BuildingPlot>().LinkVolumes();
         }
+        action();
+    }
 
-        yield return null;
+    private int CalculateMaxBuildingHeight()
+    {
+        int minHeight = BuildingsData.MIN_BUILDING_HEIGHT;
+        int maxHeight = BuildingsData.MAX_BUILDING_HEIGHT;
+        float maxDistance = _centreOfCity.magnitude;
+        float distance = (_centreOfCity - _centreOfLand).magnitude < 1.0f ? 1.0f : (_centreOfCity - _centreOfLand).magnitude;
+
+        float ratio = (maxDistance / (distance * 0.5f)) * ((maxHeight - minHeight) / maxDistance) + minHeight;
+        return Mathf.FloorToInt(ratio);
     }
 }

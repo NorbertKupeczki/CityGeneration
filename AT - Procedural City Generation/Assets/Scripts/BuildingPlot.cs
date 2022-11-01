@@ -20,7 +20,7 @@ public class BuildingPlot : MonoBehaviour
 
     [Header("Build Volume")]
     [SerializeField] GameObject buildVolume;
-    [SerializeField] int maxHeight = 3;
+    [SerializeField] int maxHeight = 10;
     [SerializeField] List<GameObject> buildVolumes = new List<GameObject> { };
 
     private void Awake()
@@ -149,18 +149,15 @@ public class BuildingPlot : MonoBehaviour
         plotType = newType;
     }
 
-    public void SetMaxHeight(int value)
-    {
-        maxHeight = value;
-    }
-
     public List<GameObject> GetBuildVolumes()
     {
         return buildVolumes;
     }
 
-    public void CreateBuildVolume()
+    public void CreateBuildVolume(int maxBuildingHeight)
     {
+        maxHeight = maxBuildingHeight;
+
         for (int i = 0; i < maxHeight; ++i)
         {
             buildVolumes.Add(Instantiate(buildVolume, new Vector3(gameObject.transform.position.x, i * 0.5f, gameObject.transform.position.z), Quaternion.identity));

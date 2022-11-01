@@ -56,7 +56,7 @@ public class RoadNetworkManager : MonoBehaviour
                 break;
         }
 
-        
+        StartCoroutine(CheckBuildVolumesReady());
     }
 
     // Update is called once per frame
@@ -67,6 +67,7 @@ public class RoadNetworkManager : MonoBehaviour
         {
             InstantiateTile(shortlistedTiles[0]);
         }
+
     }
 
     IEnumerator GenerateRoads()
@@ -410,5 +411,15 @@ public class RoadNetworkManager : MonoBehaviour
             edgeTileScript = edgeTileScript.GetNorthNeighbour().GetComponent<WFC_Tile>();            
         }
 
+    }
+
+    IEnumerator CheckBuildVolumesReady()
+    {
+        while (buildingManager.AreJobsRunning())
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        
+        Debug.Log("Build Volumes Ready");
     }
 }

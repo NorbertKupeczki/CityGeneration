@@ -8,7 +8,8 @@ public class BuildVolume : MonoBehaviour
     [SerializeField] int _id;
     [SerializeField] List<int> _validBlocks = new List<int> {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,99 };
     [SerializeField] int _entrophy;
-    [SerializeField] bool _solved;
+    [SerializeField] bool _solved = false;
+    [SerializeField] int _blockMinHeight;
 
     [Header("Neighbours")]
     [SerializeField] GameObject _north;
@@ -81,6 +82,11 @@ public class BuildVolume : MonoBehaviour
     public Vector3 GetPostition()
     {
         return gameObject.transform.position;
+    }
+
+    public void SetMinHeight(int value)
+    {
+        _blockMinHeight = value;
     }
 
     public bool HasNeighbour(BuildingsData.Direction3D direction)

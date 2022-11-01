@@ -8,6 +8,9 @@ public static class BuildingsData
     private static List<int> _midBlocks = new List<int> { };
     private static List<int> _topBlocks = new List<int> { };
 
+    public const int MAX_BUILDING_HEIGHT = 10;
+    public const int MIN_BUILDING_HEIGHT = 3;
+
     public enum BuildingLevel
     {
         BASE = 0,

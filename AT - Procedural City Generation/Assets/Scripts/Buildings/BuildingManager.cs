@@ -22,6 +22,13 @@ public class BuildingManager : MonoBehaviour
     [SerializeField] float _commercialZoneRate = 0.33f;
     [SerializeField] int _numberOfParks = 2;
 
+    private int jobsRunning = 1;
+
+    public bool AreJobsRunning()
+    {
+        return jobsRunning != 0;
+    }
+
     public GameObject GetBuildingBlock(BuildingsData.BuildingLevel level)
     {
         return _residentialSmall[(int)level];
@@ -88,14 +95,12 @@ public class BuildingManager : MonoBehaviour
                     newLargePlot.transform.SetParent(gameObject.transform);
                     FindNeighbours(x, y, newLargePlot);
                     _totalBuildingPlots += newLargePlot.SetPlotsToComplete();
-
-                    // Create build volume
-                    StartCoroutine(newLargePlot.CreateBuildVolume());
                 }
             }
         }
 
         SortLargePlotsByDistance();
+        Debug.Log("Zones done");
 
         // Start the Wave Function Collapse on each zone
     }
@@ -203,47 +208,62 @@ public class BuildingManager : MonoBehaviour
         int totalCommercialPlots = 0;
         int totalIndustrialPlots = 0;
         int counter = 0;
+        jobsRunning = _largePlots.Count;
 
         for (int i = (_largePlots.Count - 1); totalIndustrialPlots < _totalBuildingPlots * _industrialZoneRate; --i)
         {
-            _largePlots[i].GetComponent<LargePlot>().ApplyPlotType(BuildingsData.PlotType.INDUSTRIAL);
-            totalIndustrialPlots += _largePlots[i].GetComponent<LargePlot>().GetLandSize();
+            LargePlot largePlot = _largePlots[i].GetComponent<LargePlot>();
+            largePlot.ApplyPlotType(BuildingsData.PlotType.INDUSTRIAL);
+            totalIndustrialPlots += largePlot.GetLandSize();
+            // Create build volume
+            StartCoroutine(largePlot.CreateBuildVolume(VolumeReady));
         }
 
         for (int i = 0; totalCommercialPlots < _totalBuildingPlots * _commercialZoneRate; ++i)
         {
-            _largePlots[i].GetComponent<LargePlot>().ApplyPlotType(BuildingsData.PlotType.COMMERCIAL);
-            totalCommercialPlots += _largePlots[i].GetComponent<LargePlot>().GetLandSize();
+            LargePlot largePlot = _largePlots[i].GetComponent<LargePlot>();
+            largePlot.ApplyPlotType(BuildingsData.PlotType.COMMERCIAL);
+            totalCommercialPlots += largePlot.GetLandSize();
+            // Create build volume
+            StartCoroutine(largePlot.CreateBuildVolume(VolumeReady));
         }
 
         foreach (GameObject _largePlot in _largePlots)
-        {            
-            LargePlot plot = _largePlot.GetComponent<LargePlot>();
-            if (plot.IsUndefinedPlotType())
+        {
+            LargePlot largePlot = _largePlot.GetComponent<LargePlot>();
+            if (largePlot.IsUndefinedPlotType())
             {
                 switch (counter % 2)
                 {
                     case 0:
-                        plot.ApplyPlotType(BuildingsData.PlotType.RESIDENTIAL);
+                        largePlot.ApplyPlotType(BuildingsData.PlotType.RESIDENTIAL);
                         break;
                     case 1:
                         if (numberOfParks > 0)
                         {
-                            plot.ApplyPlotType(BuildingsData.PlotType.PARK);
+                            largePlot.ApplyPlotType(BuildingsData.PlotType.PARK);
                             --numberOfParks;
                         }
                         else
                         {
-                            plot.ApplyPlotType(BuildingsData.PlotType.RESIDENTIAL);
+                            largePlot.ApplyPlotType(BuildingsData.PlotType.RESIDENTIAL);
                         }
                         break;
                     default:
                         break;
                 }
+                // Create build volume
+                StartCoroutine(largePlot.CreateBuildVolume(VolumeReady));
             }
             ++counter;
         }
     }
+
+    private void VolumeReady()
+    {
+        --jobsRunning;
+    }
+
     public List<int> GetInvalidBlocks(List<int> validBlocks)
     {
         List<int> invalidBlocks = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 99 };
