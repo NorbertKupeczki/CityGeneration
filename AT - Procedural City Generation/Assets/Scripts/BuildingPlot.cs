@@ -19,7 +19,7 @@ public class BuildingPlot : MonoBehaviour
     [SerializeField] GameObject east;
 
     [Header("Build Volume")]
-    [SerializeField] GameObject buildVolume;
+    [SerializeField] GameObject buildVolumePrefab;
     [SerializeField] int maxHeight = 10;
     [SerializeField] List<GameObject> buildVolumes = new List<GameObject> { };
 
@@ -160,16 +160,18 @@ public class BuildingPlot : MonoBehaviour
 
         for (int i = 0; i < maxHeight; ++i)
         {
-            buildVolumes.Add(Instantiate(buildVolume, new Vector3(gameObject.transform.position.x, i * 0.5f, gameObject.transform.position.z), Quaternion.identity));
-            buildVolumes[i].transform.SetParent(gameObject.transform);
+            GameObject newVolume = Instantiate(buildVolumePrefab, new Vector3(gameObject.transform.position.x, i * 0.5f, gameObject.transform.position.z), Quaternion.identity);
+            buildVolumes.Add(newVolume);
+            newVolume.transform.SetParent(gameObject.transform);
+            newVolume.GetComponent<BuildVolume>().SetMinHeight(Mathf.CeilToInt(maxHeight * 0.5f));
             if (i > 0)
             {
-                LinkVolumes(buildVolumes[i].GetComponent<BuildVolume>(), BuildingsData.Direction3D.DOWN, buildVolumes[i - 1].GetComponent<BuildVolume>());
+                LinkVolumes(newVolume.GetComponent<BuildVolume>(), BuildingsData.Direction3D.DOWN, buildVolumes[i - 1].GetComponent<BuildVolume>());
             }
         }
     }
     
-    public void LinkVolumes()
+    public void CreateLinks()
     {
         if(north != null)
         {

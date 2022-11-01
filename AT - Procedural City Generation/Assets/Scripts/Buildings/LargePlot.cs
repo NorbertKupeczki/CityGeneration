@@ -10,14 +10,17 @@ public class LargePlot : MonoBehaviour
     [SerializeField] Vector2 _centreOfLand;
     [SerializeField] List<GameObject> _buildingPlots;
     [SerializeField] int _maxBuildingHeight;
+    [SerializeField] List<GameObject> _buildVolumes;
 
     [Header("District Position")]
     [SerializeField] private Vector2 _centreOfCity;
     [SerializeField] private float _distanceFromCentre;
 
+    private BuildingManager _buildingManager;
+
     private void Awake()
     {
-        //_plotType = (BuildingsData.PlotType)Random.Range(1, 5);
+        _buildingManager = FindObjectOfType<BuildingManager>();
     }
 
     public void AddBuildingPlot(GameObject _newPlot)
@@ -108,7 +111,7 @@ public class LargePlot : MonoBehaviour
 
         foreach (GameObject plot in _buildingPlots)
         {
-            plot.GetComponent<BuildingPlot>().LinkVolumes();
+            plot.GetComponent<BuildingPlot>().CreateLinks();
         }
         action();
     }
@@ -122,5 +125,78 @@ public class LargePlot : MonoBehaviour
 
         float ratio = (maxDistance / (distance * 0.5f)) * ((maxHeight - minHeight) / maxDistance) + minHeight;
         return Mathf.FloorToInt(ratio);
+    }
+
+    public void AddAllVolumesToList()
+    {
+        foreach (GameObject plot in _buildingPlots)
+        {
+            foreach (GameObject volume in plot.GetComponent<BuildingPlot>().GetBuildVolumes())
+            {
+                _buildVolumes.Add(volume);
+                volume.GetComponent<BuildVolume>().RemoveInvalidBlocks();
+            }
+        }
+    }
+
+    private void SortVolumesByEntrophy()
+    {
+        _buildVolumes.Sort(delegate (GameObject a, GameObject b) {
+            return (a.GetComponent<BuildVolume>().GetEntrophy()).CompareTo(b.GetComponent<BuildVolume>().GetEntrophy());
+        });
+    }
+
+    IEnumerator GenerateBuildings()
+    {
+        while (_buildVolumes.Count > 0)
+        {
+            InstantiateBuildingBlock(_buildVolumes[0]);
+            yield return new WaitForSeconds(0.005f);
+        }
+    }
+
+    private void InstantiateBuildingBlock(GameObject volume)
+    {
+        BuildVolume volumeScript = volume.GetComponent<BuildVolume>();
+        
+        GameObject block = Instantiate(_buildingManager.GetTestBlock(volumeScript.SelectRandomBlock()),
+                                      volumeScript.GetPostition(),
+                                      Quaternion.identity);
+
+        Propogate(volumeScript, block);
+        block.transform.SetParent(gameObject.transform);
+        volumeScript.SetSolved();
+
+        _buildVolumes.Remove(volume);
+
+        SortVolumesByEntrophy();
+    }
+
+    private void Propogate(BuildVolume volumeScript, GameObject block)
+    {
+        // Propogate to North
+        if (volumeScript.GetNorth())
+        {
+            if (!volumeScript.GetNorth().GetComponent<BuildVolume>().IsSolved())
+            {
+                PropogateToBlock(volumeScript.GetNorth(), block.GetComponent<BuildingClass>().GetNorth());
+                volumeScript.GetNorth().GetComponent<BuildVolume>().Propogate();
+            }
+        }
+        // Propogate to West
+
+        // Propogate to South
+
+        // Propogate to East
+
+        // Propogate to Up
+
+        // Propogate to Down
+    }
+
+    private void PropogateToBlock(GameObject buildVolume, List<int> _validBlocks)
+    {
+        BuildVolume volumeScript = buildVolume.GetComponent<BuildVolume>();
+        volumeScript.Collapse(_buildingManager.GetInvalidBlocks(_validBlocks));
     }
 }

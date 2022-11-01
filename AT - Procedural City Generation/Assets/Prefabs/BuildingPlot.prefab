@@ -54,6 +54,6 @@ MonoBehaviour:
   west: {fileID: 0}
   south: {fileID: 0}
   east: {fileID: 0}
-  buildVolume: {fileID: 7785745799885349026, guid: c5a9917d69b56314680b69686a7df7d2, type: 3}
+  buildVolumePrefab: {fileID: 7785745799885349026, guid: c5a9917d69b56314680b69686a7df7d2, type: 3}
   maxHeight: 3
   buildVolumes: []

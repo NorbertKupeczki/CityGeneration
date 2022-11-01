@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class BuildVolume : MonoBehaviour
 {
     [Header("Basics")]
     [SerializeField] int _id;
-    [SerializeField] List<int> _validBlocks = new List<int> {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,99 };
+    [SerializeField] List<int> _validBlocks = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 99 };
     [SerializeField] int _entrophy;
     [SerializeField] bool _solved = false;
     [SerializeField] int _blockMinHeight;
@@ -281,4 +282,49 @@ public class BuildVolume : MonoBehaviour
         return _down;
     }
     #endregion
+
+    public bool RemoveInvalidBlocks()
+    {
+        int startingEntrophy = _entrophy;
+
+        if (_north == null)
+        {
+            List<int> toRemove = new List<int> { 0, 4, 5, 6, 7, 8, 11, 12, 14, 17, 18, 19, 20, 23, 24 };
+            foreach (int id in toRemove)
+            {
+                _validBlocks.Remove(id);
+            }
+        }
+        if (_west == null)
+        {
+            List<int> toRemove = new List<int> { 0, 2, 3, 5, 7, 8, 10, 12, 16, 18, 20, 21, 22, 23, 24 };
+            foreach (int id in toRemove)
+            {
+                _validBlocks.Remove(id);
+            }
+        }
+        if (_south == null)
+        {
+            List<int> toRemove = new List<int> { 0, 1, 2, 3, 4, 5, 9, 10, 13, 17, 18, 19, 20, 21, 22 };
+            foreach (int id in toRemove)
+            {
+                _validBlocks.Remove(id);
+            }
+        }
+        if (_east == null)
+        {
+            List<int> toRemove = new List<int> { 0, 1, 2, 4, 6, 7, 9, 11, 15, 17, 19, 21, 22, 23, 24 };
+            foreach (int id in toRemove)
+            {
+                _validBlocks.Remove(id);
+            }
+        }
+        if (gameObject.transform.position.y < _blockMinHeight - 1)
+        {
+            _validBlocks.Remove(99);
+        }
+
+        _entrophy = _validBlocks.Count;
+        return startingEntrophy == _entrophy;
+    }
 }
