@@ -7,7 +7,7 @@ public class BuildVolume : MonoBehaviour
 {
     [Header("Basics")]
     [SerializeField] int _id;
-    [SerializeField] List<int> _validBlocks = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 99 };
+    [SerializeField] List<int> _validBlocks = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
     [SerializeField] int _entrophy;
     [SerializeField] bool _solved = false;
     [SerializeField] int _blockMinHeight;
@@ -22,11 +22,13 @@ public class BuildVolume : MonoBehaviour
 
     [Header("Misc.")]
     [SerializeField] BuildingManager _buildingManager;
+    [SerializeField] int _level = 0;
 
     private void Awake()
     {
         _buildingManager = FindObjectOfType<BuildingManager>();
         _entrophy = _validBlocks.Count;
+        _level = Mathf.RoundToInt(transform.position.y * 4);
     }
     public int GetEntrophy()
     {
@@ -36,6 +38,11 @@ public class BuildVolume : MonoBehaviour
     public bool IsSolved()
     {
         return _solved;
+    }
+
+    public int GetLevel()
+    {
+        return _level;
     }
 
     public void SetSolved()
@@ -119,8 +126,8 @@ public class BuildVolume : MonoBehaviour
         }
         else
         {
-            // TODO: May need to check for block 99 and don't allow that under special circumstances
-            int rnd = Random.Range(0, _validBlocks.Count);
+            // TODO: May need to check for block 26 and don't allow that under special circumstances
+            int rnd = Random.Range(0, _validBlocks.Count - 1);
             return _validBlocks[rnd];
             //return BuildingsData.GetWeightedBlockIndex(_validBlocks);
         }
@@ -319,9 +326,9 @@ public class BuildVolume : MonoBehaviour
                 _validBlocks.Remove(id);
             }
         }
-        if (gameObject.transform.position.y < _blockMinHeight - 1)
+        if (_level < _blockMinHeight)
         {
-            _validBlocks.Remove(99);
+            _validBlocks.Remove(26);
         }
 
         _entrophy = _validBlocks.Count;

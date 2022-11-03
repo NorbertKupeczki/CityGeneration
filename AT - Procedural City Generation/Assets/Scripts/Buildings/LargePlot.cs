@@ -127,6 +127,13 @@ public class LargePlot : MonoBehaviour
         return Mathf.FloorToInt(ratio);
     }
 
+    public void StartBuildingGeneration()
+    {
+        AddAllVolumesToList();
+        SortVolumesByEntrophy();
+        StartCoroutine(GenerateBuildings());
+    }
+
     public void AddAllVolumesToList()
     {
         foreach (GameObject plot in _buildingPlots)
@@ -146,11 +153,18 @@ public class LargePlot : MonoBehaviour
         });
     }
 
-    IEnumerator GenerateBuildings()
+    private IEnumerator GenerateBuildings()
     {
         while (_buildVolumes.Count > 0)
         {
-            InstantiateBuildingBlock(_buildVolumes[0]);
+            if (_plotType == BuildingsData.PlotType.PARK)
+            {
+                InstantiateParkTile(_buildVolumes[0]);
+            }
+            else
+            {
+                InstantiateBuildingBlock(_buildVolumes[0]);
+            }
             yield return new WaitForSeconds(0.005f);
         }
     }
@@ -172,26 +186,90 @@ public class LargePlot : MonoBehaviour
         SortVolumesByEntrophy();
     }
 
+    private void InstantiateParkTile(GameObject volume)
+    {
+        BuildVolume volumeScript = volume.GetComponent<BuildVolume>();
+
+        GameObject block = Instantiate(_buildingManager.GetParkTile(),
+                                      volumeScript.GetPostition(),
+                                      Quaternion.identity);
+
+        //Propogate(volumeScript, block);
+        block.transform.SetParent(gameObject.transform);
+        volumeScript.SetSolved();
+
+        _buildVolumes.Remove(volume);
+
+        //SortVolumesByEntrophy();
+    }
+
     private void Propogate(BuildVolume volumeScript, GameObject block)
     {
         // Propogate to North
         if (volumeScript.GetNorth())
         {
-            if (!volumeScript.GetNorth().GetComponent<BuildVolume>().IsSolved())
+            BuildVolume north = volumeScript.GetNorth().GetComponent<BuildVolume>();
+            if (!north.IsSolved())
             {
                 PropogateToBlock(volumeScript.GetNorth(), block.GetComponent<BuildingClass>().GetNorth());
-                volumeScript.GetNorth().GetComponent<BuildVolume>().Propogate();
+                north.Propogate();
             }
         }
+
         // Propogate to West
+        if (volumeScript.GetWest())
+        {
+            BuildVolume west = volumeScript.GetWest().GetComponent<BuildVolume>();
+            if (!west.IsSolved())
+            {
+                PropogateToBlock(volumeScript.GetWest(), block.GetComponent<BuildingClass>().GetWest());
+                west.Propogate();
+            }
+        }
 
         // Propogate to South
+        if (volumeScript.GetSouth())
+        {
+            BuildVolume south = volumeScript.GetSouth().GetComponent<BuildVolume>();
+            if (!south.IsSolved())
+            {
+                PropogateToBlock(volumeScript.GetSouth(), block.GetComponent<BuildingClass>().GetSouth());
+                south.Propogate();
+            }
+        }
 
         // Propogate to East
+        if (volumeScript.GetEast())
+        {
+            BuildVolume east = volumeScript.GetEast().GetComponent<BuildVolume>();
+            if (!east.IsSolved())
+            {
+                PropogateToBlock(volumeScript.GetEast(), block.GetComponent<BuildingClass>().GetEast());
+                east.Propogate();
+            }
+        }
 
         // Propogate to Up
+        if (volumeScript.GetUp())
+        {
+            BuildVolume up = volumeScript.GetUp().GetComponent<BuildVolume>();
+            if (!up.IsSolved())
+            {
+                PropogateToBlock(volumeScript.GetUp(), block.GetComponent<BuildingClass>().GetAbove());
+                up.Propogate();
+            }
+        }
 
         // Propogate to Down
+        if (volumeScript.GetDown())
+        {
+            BuildVolume down = volumeScript.GetDown().GetComponent<BuildVolume>();
+            if (!down.IsSolved())
+            {
+                PropogateToBlock(volumeScript.GetDown(), block.GetComponent<BuildingClass>().GetBelow());
+                down.Propogate();
+            }
+        }
     }
 
     private void PropogateToBlock(GameObject buildVolume, List<int> _validBlocks)

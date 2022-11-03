@@ -157,16 +157,26 @@ public class BuildingPlot : MonoBehaviour
     public void CreateBuildVolume(int maxBuildingHeight)
     {
         maxHeight = maxBuildingHeight;
-
-        for (int i = 0; i < maxHeight; ++i)
+        if (plotType == BuildingsData.PlotType.PARK)
         {
-            GameObject newVolume = Instantiate(buildVolumePrefab, new Vector3(gameObject.transform.position.x, i * 0.5f, gameObject.transform.position.z), Quaternion.identity);
+            GameObject newVolume = Instantiate(buildVolumePrefab, new Vector3(gameObject.transform.position.x, 0.0f, gameObject.transform.position.z), Quaternion.identity);
             buildVolumes.Add(newVolume);
             newVolume.transform.SetParent(gameObject.transform);
-            newVolume.GetComponent<BuildVolume>().SetMinHeight(Mathf.CeilToInt(maxHeight * 0.5f));
-            if (i > 0)
+        }
+        else
+        {
+            for (int i = 0; i < maxHeight; ++i)
             {
-                LinkVolumes(newVolume.GetComponent<BuildVolume>(), BuildingsData.Direction3D.DOWN, buildVolumes[i - 1].GetComponent<BuildVolume>());
+
+                GameObject newVolume = Instantiate(buildVolumePrefab, new Vector3(gameObject.transform.position.x, i * 0.25f, gameObject.transform.position.z), Quaternion.identity);
+                buildVolumes.Add(newVolume);
+                newVolume.transform.SetParent(gameObject.transform);
+                newVolume.GetComponent<BuildVolume>().SetMinHeight(Mathf.CeilToInt(maxHeight * 0.5f));
+                if (i > 0)
+                {
+                    LinkVolumes(newVolume.GetComponent<BuildVolume>(), BuildingsData.Direction3D.DOWN, buildVolumes[i - 1].GetComponent<BuildVolume>());
+                }
+
             }
         }
     }

@@ -47,13 +47,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: 00
   id: 0
-  mapSize: {x: 0, y: 0}
   north: 0000000002000000
   west: 0000000004000000
   south: 0000000007000000
   east: 0000000005000000
-  above: 0000000063000000
-  below: 0000000063000000
+  above: 000000001a000000
+  below: 000000001a000000
 --- !u!1001 &6760483773525323393
 PrefabInstance:
   m_ObjectHideFlags: 0

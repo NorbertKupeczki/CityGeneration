@@ -55,8 +55,6 @@ public class RoadNetworkManager : MonoBehaviour
             default:
                 break;
         }
-
-        StartCoroutine(CheckBuildVolumesReady());
     }
 
     // Update is called once per frame
@@ -411,15 +409,5 @@ public class RoadNetworkManager : MonoBehaviour
             edgeTileScript = edgeTileScript.GetNorthNeighbour().GetComponent<WFC_Tile>();            
         }
 
-    }
-
-    IEnumerator CheckBuildVolumesReady()
-    {
-        while (buildingManager.AreJobsRunning())
-        {
-            yield return new WaitForSeconds(0.1f);
-        }
-        
-        Debug.Log("Build Volumes Ready");
     }
 }

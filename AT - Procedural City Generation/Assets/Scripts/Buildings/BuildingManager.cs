@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 public class BuildingManager : MonoBehaviour
 {
@@ -23,6 +24,11 @@ public class BuildingManager : MonoBehaviour
     [SerializeField] int _numberOfParks = 2;
 
     private int jobsRunning = 1;
+
+    private void Start()
+    {
+        StartCoroutine(CheckBuildVolumesReady());
+    }
 
     public bool AreJobsRunning()
     {
@@ -266,7 +272,7 @@ public class BuildingManager : MonoBehaviour
 
     public List<int> GetInvalidBlocks(List<int> validBlocks)
     {
-        List<int> invalidBlocks = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 99 };
+        List<int> invalidBlocks = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
 
         foreach (int block in validBlocks)
         {
@@ -293,6 +299,26 @@ public class BuildingManager : MonoBehaviour
                 return _testBuildings[id].GetComponent<BuildingClass>().GetBelow();
             default:
                 return new List<int>() { };
+        }
+    }
+
+    IEnumerator CheckBuildVolumesReady()
+    {
+        while (AreJobsRunning())
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        Debug.Log("Build Volumes Ready");
+        StartGeneratingBuildings();
+        yield break;
+    }
+
+    private void StartGeneratingBuildings()
+    {
+        foreach (GameObject zone in _largePlots)
+        {
+            zone.GetComponent<LargePlot>().StartBuildingGeneration();
         }
     }
 }
