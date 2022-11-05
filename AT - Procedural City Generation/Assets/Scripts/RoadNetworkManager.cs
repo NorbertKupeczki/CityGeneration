@@ -75,8 +75,10 @@ public class RoadNetworkManager : MonoBehaviour
             InstantiateTile(shortlistedTiles[0]);
             yield return new WaitForSeconds(0.005f);
         }
+        Debug.Log("Road network done");
         buildingManager.CreateLargePlots();
         buildingManager.CreateZones();
+        yield break;
     }
 
     private void GenerateGrid()

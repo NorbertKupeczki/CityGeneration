@@ -66,11 +66,11 @@ public class BuildVolume : MonoBehaviour
         }
         if (GetUp())
         {
-            GetUp().GetComponent<BuildVolume>().RemoveUp();
+            GetUp().GetComponent<BuildVolume>().RemoveDown();
         }
         if (GetDown())
         {
-            GetDown().GetComponent<BuildVolume>().RemoveDown();
+            GetDown().GetComponent<BuildVolume>().RemoveUp();
         }
 
         Destroy(gameObject);
@@ -126,10 +126,9 @@ public class BuildVolume : MonoBehaviour
         }
         else
         {
-            // TODO: May need to check for block 26 and don't allow that under special circumstances
-            int rnd = Random.Range(0, _validBlocks.Count - 1);
-            return _validBlocks[rnd];
-            //return BuildingsData.GetWeightedBlockIndex(_validBlocks);
+            // int rnd = Random.Range(0, _validBlocks.Count);
+            // return _validBlocks[rnd];
+            return BuildingsData.GetWeightedBlockIndex(_validBlocks);
         }
     }
     
@@ -180,27 +179,21 @@ public class BuildVolume : MonoBehaviour
                 {
                     case BuildingsData.Direction3D.NORTH:
                         GetNorth().GetComponent<BuildVolume>().Collapse(invalidToPropogate);
-                        //roadManager.ShortlistTile(GetNorthNeighbour());
                         break;
                     case BuildingsData.Direction3D.WEST:
                         GetWest().GetComponent<BuildVolume>().Collapse(invalidToPropogate);
-                        //roadManager.ShortlistTile(GetWestNeighbour());
                         break;
                     case BuildingsData.Direction3D.SOUTH:
                         GetSouth().GetComponent<BuildVolume>().Collapse(invalidToPropogate);
-                        //roadManager.ShortlistTile(GetSouthNeighbour());
                         break;
                     case BuildingsData.Direction3D.EAST:
                         GetEast().GetComponent<BuildVolume>().Collapse(invalidToPropogate);
-                        //roadManager.ShortlistTile(GetEastNeighbour());
                         break;
                     case BuildingsData.Direction3D.UP:
                         GetUp().GetComponent<BuildVolume>().Collapse(invalidToPropogate);
-                        //roadManager.ShortlistTile(GetEastNeighbour());
                         break;
                     case BuildingsData.Direction3D.DOWN:
                         GetDown().GetComponent<BuildVolume>().Collapse(invalidToPropogate);
-                        //roadManager.ShortlistTile(GetEastNeighbour());
                         break;
                     default:
                         break;
@@ -332,6 +325,7 @@ public class BuildVolume : MonoBehaviour
         }
 
         _entrophy = _validBlocks.Count;
+        Propogate();
         return startingEntrophy == _entrophy;
     }
 }

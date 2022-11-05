@@ -29,6 +29,11 @@ public class BuildingPlot : MonoBehaviour
         worldCoord = new Vector2(gameObject.transform.position.z, gameObject.transform.position.x);
     }
 
+    public int GetMaxHeight()
+    {
+        return maxHeight;
+    }
+
     public void Build(int levels)
     {
         switch (plotType)

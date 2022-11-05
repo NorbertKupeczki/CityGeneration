@@ -15,7 +15,22 @@ public class BuildingClass : MonoBehaviour
     [SerializeField] List<int> east = new List<int> { };
     [SerializeField] List<int> above = new List<int> { };
     [SerializeField] List<int> below = new List<int> { };
+
+    private Renderer renderer;
     
+    private void Awake()
+    {
+        renderer = GetComponentInChildren<Renderer>();
+    }
+
+    public void SetColour(Color colour)
+    {
+        if(renderer != null)
+        {
+            renderer.material.color = colour;
+        }
+    }
+
     #region ">> Valid tile accessor functions"
     public List<int> GetNorth()
     {

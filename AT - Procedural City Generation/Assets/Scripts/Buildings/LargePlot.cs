@@ -10,13 +10,14 @@ public class LargePlot : MonoBehaviour
     [SerializeField] Vector2 _centreOfLand;
     [SerializeField] List<GameObject> _buildingPlots;
     [SerializeField] int _maxBuildingHeight;
-    [SerializeField] List<GameObject> _buildVolumes;
+    [SerializeField] List<List<GameObject>> _buildVolumes = new List<List<GameObject>> { };
 
     [Header("District Position")]
     [SerializeField] private Vector2 _centreOfCity;
     [SerializeField] private float _distanceFromCentre;
 
     private BuildingManager _buildingManager;
+    private Color _colour;
 
     private void Awake()
     {
@@ -65,6 +66,25 @@ public class LargePlot : MonoBehaviour
         {
             _plot.GetComponent<BuildingPlot>().SetPlotType(_plotType);
             //_plot.GetComponent<BuildingPlot>().Build(_maxBuildingHeight);
+        }
+
+        switch (plotType)
+        {
+            case BuildingsData.PlotType.UNDEFINED:
+                break;
+            case BuildingsData.PlotType.RESIDENTIAL:
+                _colour = Color.green ;
+                break;
+            case BuildingsData.PlotType.COMMERCIAL:
+                _colour = Color.blue;
+                break;
+            case BuildingsData.PlotType.INDUSTRIAL:
+                _colour = Color.yellow;
+                break;
+            case BuildingsData.PlotType.PARK:
+                break;
+            default:
+                break;
         }
     }
 
@@ -127,63 +147,85 @@ public class LargePlot : MonoBehaviour
         return Mathf.FloorToInt(ratio);
     }
 
-    public void StartBuildingGeneration()
+    public void StartBuildingGeneration(Action construtionReadyFunction)
     {
         AddAllVolumesToList();
         SortVolumesByEntrophy();
-        StartCoroutine(GenerateBuildings());
+        StartCoroutine(GenerateBuildings(construtionReadyFunction));
     }
 
     public void AddAllVolumesToList()
     {
         foreach (GameObject plot in _buildingPlots)
         {
-            foreach (GameObject volume in plot.GetComponent<BuildingPlot>().GetBuildVolumes())
+            BuildingPlot plotScript = plot.GetComponent<BuildingPlot>();
+            for(int i = 0; i < _maxBuildingHeight; ++i)
             {
-                _buildVolumes.Add(volume);
-                volume.GetComponent<BuildVolume>().RemoveInvalidBlocks();
+                _buildVolumes.Add(new List<GameObject> { });
+            }
+
+            foreach (GameObject volume in plotScript.GetBuildVolumes())
+            {
+                BuildVolume volumeScript = volume.GetComponent<BuildVolume>();
+
+                _buildVolumes[volumeScript.GetLevel()].Add(volume);
+                volumeScript.RemoveInvalidBlocks();
             }
         }
     }
 
     private void SortVolumesByEntrophy()
     {
-        _buildVolumes.Sort(delegate (GameObject a, GameObject b) {
+        for (int i = 0; i < _buildVolumes.Count; ++i)
+        {
+            SortLevelByEntrophy(i);
+        }
+    }
+
+    private void SortLevelByEntrophy(int level)
+    {
+        _buildVolumes[level].Sort(delegate (GameObject a, GameObject b) {
             return (a.GetComponent<BuildVolume>().GetEntrophy()).CompareTo(b.GetComponent<BuildVolume>().GetEntrophy());
         });
     }
 
-    private IEnumerator GenerateBuildings()
+    private IEnumerator GenerateBuildings(Action action)
     {
-        while (_buildVolumes.Count > 0)
+        for (int i = 0; i < _buildVolumes.Count; ++i)
         {
-            if (_plotType == BuildingsData.PlotType.PARK)
+            SortLevelByEntrophy(i);
+            while (_buildVolumes[i].Count > 0)
             {
-                InstantiateParkTile(_buildVolumes[0]);
+                if (_plotType == BuildingsData.PlotType.PARK)
+                {
+                    InstantiateParkTile(_buildVolumes[i][0]);
+                }
+                else
+                {
+                    InstantiateBuildingBlock(_buildVolumes[i][0], i);
+                }
+                yield return new WaitForSeconds(0.002f);
             }
-            else
-            {
-                InstantiateBuildingBlock(_buildVolumes[0]);
-            }
-            yield return new WaitForSeconds(0.005f);
-        }
+        }   
+        action();
+        yield break;
     }
 
-    private void InstantiateBuildingBlock(GameObject volume)
+    private void InstantiateBuildingBlock(GameObject volume, int level)
     {
         BuildVolume volumeScript = volume.GetComponent<BuildVolume>();
         
         GameObject block = Instantiate(_buildingManager.GetTestBlock(volumeScript.SelectRandomBlock()),
                                       volumeScript.GetPostition(),
                                       Quaternion.identity);
-
+        block.GetComponent<BuildingClass>().SetColour(_colour);
         Propogate(volumeScript, block);
         block.transform.SetParent(gameObject.transform);
         volumeScript.SetSolved();
 
-        _buildVolumes.Remove(volume);
+        _buildVolumes[level].Remove(volume);
 
-        SortVolumesByEntrophy();
+        SortLevelByEntrophy(level);
     }
 
     private void InstantiateParkTile(GameObject volume)
@@ -198,7 +240,7 @@ public class LargePlot : MonoBehaviour
         block.transform.SetParent(gameObject.transform);
         volumeScript.SetSolved();
 
-        _buildVolumes.Remove(volume);
+        _buildVolumes[0].Remove(volume);
 
         //SortVolumesByEntrophy();
     }
@@ -261,6 +303,7 @@ public class LargePlot : MonoBehaviour
         }
 
         // Propogate to Down
+        
         if (volumeScript.GetDown())
         {
             BuildVolume down = volumeScript.GetDown().GetComponent<BuildVolume>();

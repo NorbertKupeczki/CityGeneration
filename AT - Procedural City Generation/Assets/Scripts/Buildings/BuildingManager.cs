@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
@@ -270,6 +269,11 @@ public class BuildingManager : MonoBehaviour
         --jobsRunning;
     }
 
+    private void ConstructionReady()
+    {
+        --jobsRunning;
+    }
+
     public List<int> GetInvalidBlocks(List<int> validBlocks)
     {
         List<int> invalidBlocks = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
@@ -314,11 +318,25 @@ public class BuildingManager : MonoBehaviour
         yield break;
     }
 
+    IEnumerator CheckConstructionReady()
+    {
+        while (AreJobsRunning())
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        Debug.Log("Building Construction Complete");
+        yield break;
+    }
+
     private void StartGeneratingBuildings()
     {
         foreach (GameObject zone in _largePlots)
         {
-            zone.GetComponent<LargePlot>().StartBuildingGeneration();
+            zone.GetComponent<LargePlot>().StartBuildingGeneration(ConstructionReady);
+            ++jobsRunning;
         }
+
+        StartCoroutine(CheckConstructionReady());
     }
 }
