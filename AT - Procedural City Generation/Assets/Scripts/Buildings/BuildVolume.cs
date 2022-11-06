@@ -7,7 +7,7 @@ public class BuildVolume : MonoBehaviour
 {
     [Header("Basics")]
     [SerializeField] int _id;
-    [SerializeField] List<int> _validBlocks = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
+    [SerializeField] List<int> _validBlocks = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27 };
     [SerializeField] int _entrophy;
     [SerializeField] bool _solved = false;
     [SerializeField] int _blockMinHeight;
@@ -23,6 +23,7 @@ public class BuildVolume : MonoBehaviour
     [Header("Misc.")]
     [SerializeField] BuildingManager _buildingManager;
     [SerializeField] int _level = 0;
+    [SerializeField] int _idOfBlockBelow = -1;
 
     private void Awake()
     {
@@ -30,6 +31,23 @@ public class BuildVolume : MonoBehaviour
         _entrophy = _validBlocks.Count;
         _level = Mathf.RoundToInt(transform.position.y * 4);
     }
+
+    private void ClearVolumeStack()
+    {
+        if (_north)
+            _north.GetComponent<BuildVolume>().SetSouth(null);
+        if (_west)
+            _west.GetComponent<BuildVolume>().SetEast(null);
+        if (_south)
+            _south.GetComponent<BuildVolume>().SetNorth(null);
+        if (_east)
+            _east.GetComponent<BuildVolume>().SetWest(null);
+        if (_up)
+            _up.GetComponent<BuildVolume>().ClearVolumeStack();
+
+        Destroy(gameObject);
+    }
+
     public int GetEntrophy()
     {
         return _entrophy;
@@ -118,17 +136,34 @@ public class BuildVolume : MonoBehaviour
         }
     }
 
+    public void SetIdOfBlockBelow (int value)
+    {
+        _idOfBlockBelow = value;
+    }
+
+    public int GetIdOfBlockBelow ()
+    {
+        return _idOfBlockBelow;
+    }
+
     public int SelectRandomBlock()
     {
         if (_entrophy == 1)
         {
+            if(_up)
+            {
+                _up.GetComponent<BuildVolume>().SetIdOfBlockBelow(_validBlocks[0]);
+            }
             return _validBlocks[0];
         }
         else
         {
-            // int rnd = Random.Range(0, _validBlocks.Count);
-            // return _validBlocks[rnd];
-            return BuildingsData.GetWeightedBlockIndex(_validBlocks);
+            int toReturn = BuildingsData.GetWeightedBlockIndex(_validBlocks);
+            if (_up)
+            {
+                _up.GetComponent<BuildVolume>().SetIdOfBlockBelow(toReturn);
+            }
+            return toReturn;
         }
     }
     

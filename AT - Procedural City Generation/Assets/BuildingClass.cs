@@ -17,10 +17,12 @@ public class BuildingClass : MonoBehaviour
     [SerializeField] List<int> below = new List<int> { };
 
     private Renderer renderer;
+    private int _level;
     
     private void Awake()
     {
         renderer = GetComponentInChildren<Renderer>();
+        _level = Mathf.RoundToInt(transform.position.y * 4);
     }
 
     public void SetColour(Color colour)
@@ -29,6 +31,32 @@ public class BuildingClass : MonoBehaviour
         {
             renderer.material.color = colour;
         }
+    }
+
+    public void CreateBuildingBlock(BuildingsData.PlotType type, BuildingsPrefabManager bpm, int idOfBlockBelow, bool LastLevel)
+    {
+        if (renderer != null)
+        {
+            Destroy(renderer.gameObject);
+        }
+        
+        if ((LastLevel  && idOfBlockBelow != 26) || (id == 26 && idOfBlockBelow != 26))
+        {
+            GameObject block = Instantiate(bpm.GetBuilding(type, idOfBlockBelow), transform.position, Quaternion.identity);
+            block.GetComponent<BuildingLevelSelector>().SelectLevel(BuildingsData.BuildingLevel.TOP);
+        }
+        else if (id < 26)
+        {
+            BuildingsData.BuildingLevel bLevel = _level == 0 ? BuildingsData.BuildingLevel.BASE : BuildingsData.BuildingLevel.MID;
+
+            GameObject block = Instantiate(bpm.GetBuilding(type, id), transform.position, Quaternion.identity);
+            block.GetComponent<BuildingLevelSelector>().SelectLevel(bLevel);
+        }
+        /*else if (id == 26 && idOfBlockBelow != 26)
+        {
+            GameObject block = Instantiate(bpm.GetBuilding(type, idOfBlockBelow), transform.position, Quaternion.identity);
+            block.GetComponent<BuildingLevelSelector>().SelectLevel(BuildingsData.BuildingLevel.TOP);
+        }*/
     }
 
     #region ">> Valid tile accessor functions"

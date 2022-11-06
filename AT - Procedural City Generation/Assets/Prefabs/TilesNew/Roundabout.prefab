@@ -31,7 +31,7 @@ Transform:
   m_Children:
   - {fileID: 4057552951588269262}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4538468097949736244
 MonoBehaviour:
@@ -122,6 +122,22 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 657b0f820f2aec94b93a7680f6344c62, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 27f50630243560a4c89bb1959f3c00d0, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 657b0f820f2aec94b93a7680f6344c62, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: dea31137ca9fdb74e8e4ae4a557f560e, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 657b0f820f2aec94b93a7680f6344c62, type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: c9e0308011ce04748bf04dae2934217e, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 657b0f820f2aec94b93a7680f6344c62, type: 3}
+      propertyPath: m_Materials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: f7c3570e29852844fbce9b93dc2e875e, type: 2}
     - target: {fileID: 919132149155446097, guid: 657b0f820f2aec94b93a7680f6344c62, type: 3}
       propertyPath: m_Name
       value: road_roundabout

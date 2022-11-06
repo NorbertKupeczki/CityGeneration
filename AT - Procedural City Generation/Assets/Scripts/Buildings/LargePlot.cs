@@ -17,11 +17,13 @@ public class LargePlot : MonoBehaviour
     [SerializeField] private float _distanceFromCentre;
 
     private BuildingManager _buildingManager;
+    private BuildingsPrefabManager _bpm;
     private Color _colour;
 
     private void Awake()
     {
         _buildingManager = FindObjectOfType<BuildingManager>();
+        _bpm = FindObjectOfType<BuildingsPrefabManager>();
     }
 
     public void AddBuildingPlot(GameObject _newPlot)
@@ -214,11 +216,24 @@ public class LargePlot : MonoBehaviour
     private void InstantiateBuildingBlock(GameObject volume, int level)
     {
         BuildVolume volumeScript = volume.GetComponent<BuildVolume>();
+        bool lastLevel = level == (_maxBuildingHeight - 1);
         
         GameObject block = Instantiate(_buildingManager.GetTestBlock(volumeScript.SelectRandomBlock()),
                                       volumeScript.GetPostition(),
                                       Quaternion.identity);
-        block.GetComponent<BuildingClass>().SetColour(_colour);
+
+        if (_plotType == BuildingsData.PlotType.RESIDENTIAL)
+        {
+            block.GetComponent<BuildingClass>().CreateBuildingBlock(_plotType,
+                                                                    _bpm.GetComponent<BuildingsPrefabManager>(),
+                                                                    volumeScript.GetIdOfBlockBelow(),
+                                                                    lastLevel);
+        }
+        else
+        {
+            block.GetComponent<BuildingClass>().SetColour(_colour);
+        }
+        
         Propogate(volumeScript, block);
         block.transform.SetParent(gameObject.transform);
         volumeScript.SetSolved();
@@ -232,7 +247,7 @@ public class LargePlot : MonoBehaviour
     {
         BuildVolume volumeScript = volume.GetComponent<BuildVolume>();
 
-        GameObject block = Instantiate(_buildingManager.GetParkTile(),
+        GameObject block = Instantiate(_bpm.GetBuilding(BuildingsData.PlotType.PARK, 0),
                                       volumeScript.GetPostition(),
                                       Quaternion.identity);
 
