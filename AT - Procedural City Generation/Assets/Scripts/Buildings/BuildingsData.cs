@@ -35,7 +35,7 @@ public static class BuildingsData
         { 23, 15 }, // NW-E Narrowing
         { 24, 15 }, // NW-W Narrowing
         { 25, 5 }, // Single block
-        { 26, 7 }, // Empty volume
+        { 26, 10 }, // Empty volume
     };
 
     public enum BuildingLevel

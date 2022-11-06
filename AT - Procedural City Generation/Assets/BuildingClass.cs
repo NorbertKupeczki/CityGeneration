@@ -33,7 +33,7 @@ public class BuildingClass : MonoBehaviour
         }
     }
 
-    public void CreateBuildingBlock(BuildingsData.PlotType type, BuildingsPrefabManager bpm, int idOfBlockBelow, bool LastLevel)
+    public GameObject CreateBuildingBlock(BuildingsData.PlotType type, BuildingsPrefabManager bpm, int idOfBlockBelow, bool LastLevel)
     {
         if (renderer != null)
         {
@@ -44,6 +44,7 @@ public class BuildingClass : MonoBehaviour
         {
             GameObject block = Instantiate(bpm.GetBuilding(type, idOfBlockBelow), transform.position, Quaternion.identity);
             block.GetComponent<BuildingLevelSelector>().SelectLevel(BuildingsData.BuildingLevel.TOP);
+            return block;
         }
         else if (id < 26)
         {
@@ -51,12 +52,9 @@ public class BuildingClass : MonoBehaviour
 
             GameObject block = Instantiate(bpm.GetBuilding(type, id), transform.position, Quaternion.identity);
             block.GetComponent<BuildingLevelSelector>().SelectLevel(bLevel);
+            return block;
         }
-        /*else if (id == 26 && idOfBlockBelow != 26)
-        {
-            GameObject block = Instantiate(bpm.GetBuilding(type, idOfBlockBelow), transform.position, Quaternion.identity);
-            block.GetComponent<BuildingLevelSelector>().SelectLevel(BuildingsData.BuildingLevel.TOP);
-        }*/
+        return null;
     }
 
     #region ">> Valid tile accessor functions"

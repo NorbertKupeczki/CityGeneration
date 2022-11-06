@@ -18,12 +18,14 @@ public class LargePlot : MonoBehaviour
 
     private BuildingManager _buildingManager;
     private BuildingsPrefabManager _bpm;
+    private CityManager _cityManager;
     private Color _colour;
 
     private void Awake()
     {
         _buildingManager = FindObjectOfType<BuildingManager>();
         _bpm = FindObjectOfType<BuildingsPrefabManager>();
+        _cityManager = FindObjectOfType<CityManager>(); 
     }
 
     public void AddBuildingPlot(GameObject _newPlot)
@@ -222,12 +224,15 @@ public class LargePlot : MonoBehaviour
                                       volumeScript.GetPostition(),
                                       Quaternion.identity);
 
-        if (_plotType == BuildingsData.PlotType.RESIDENTIAL)
+        if (_plotType == BuildingsData.PlotType.RESIDENTIAL ||
+            _plotType == BuildingsData.PlotType.COMMERCIAL)
         {
-            block.GetComponent<BuildingClass>().CreateBuildingBlock(_plotType,
-                                                                    _bpm.GetComponent<BuildingsPrefabManager>(),
-                                                                    volumeScript.GetIdOfBlockBelow(),
-                                                                    lastLevel);
+            GameObject element = block.GetComponent<BuildingClass>().CreateBuildingBlock(_plotType,
+                                                                                         _bpm.GetComponent<BuildingsPrefabManager>(),
+                                                                                         volumeScript.GetIdOfBlockBelow(),
+                                                                                         lastLevel);
+            if (element != null)
+                element.transform.SetParent(gameObject.transform);
         }
         else
         {
@@ -235,7 +240,7 @@ public class LargePlot : MonoBehaviour
         }
         
         Propogate(volumeScript, block);
-        block.transform.SetParent(gameObject.transform);
+        block.transform.SetParent(gameObject.transform); // Once everyting is done, we can destroy the block instead of keeping it
         volumeScript.SetSolved();
 
         _buildVolumes[level].Remove(volume);

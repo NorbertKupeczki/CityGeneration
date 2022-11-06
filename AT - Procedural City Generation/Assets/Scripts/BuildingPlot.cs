@@ -34,52 +34,6 @@ public class BuildingPlot : MonoBehaviour
         return maxHeight;
     }
 
-    public void Build(int levels)
-    {
-        switch (plotType)
-        {
-            case BuildingsData.PlotType.UNDEFINED:
-                break;
-            case BuildingsData.PlotType.RESIDENTIAL:
-                BuildTestBlock(levels, Color.green);
-                break;
-            case BuildingsData.PlotType.COMMERCIAL:
-                BuildTestBlock(levels, Color.blue);
-                break;
-            case BuildingsData.PlotType.INDUSTRIAL:
-                BuildTestBlock(levels, Color.yellow);
-                break;
-            case BuildingsData.PlotType.PARK:
-                GameObject park = Instantiate(manager.GetParkTile(),
-                                  new Vector3(gameObject.transform.position.x, gameObject.transform.localPosition.y, gameObject.transform.position.z),
-                                  Quaternion.Euler(new Vector3(gameObject.transform.rotation.x, 90 * Random.Range(0, 5) ,gameObject.transform.rotation.z)));
-                park.transform.SetParent(gameObject.transform);
-                break;
-            default:
-                break;
-        }
-
-        /*for (int i = 0; i < levels; i++)
-        {
-            if (i == 0)
-            {
-                buildingBlock = manager.GetBuildingBlock(BuildingsData.BuildingLevel.BASE);
-            }
-            else if (i == levels - 1)
-            {
-                buildingBlock = manager.GetBuildingBlock(BuildingsData.BuildingLevel.TOP);
-            }
-            else
-            {
-                buildingBlock = manager.GetBuildingBlock(BuildingsData.BuildingLevel.MID);
-            }
-
-            Instantiate(buildingBlock,
-                        new Vector3(gameObject.transform.position.x, gameObject.transform.localScale.y * i * 0.5f * scaleFactor, gameObject.transform.position.z),
-                        Quaternion.identity);
-        }*/
-    }
-
     private void BuildTestBlock(int levels, Color colour)
     {
         GameObject building = Instantiate(buildingBlock,

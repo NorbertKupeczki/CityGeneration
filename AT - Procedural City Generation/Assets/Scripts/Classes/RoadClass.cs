@@ -40,17 +40,6 @@ public class RoadClass : MonoBehaviour
         //GenerateBuildings();
     }
 
-    private void GenerateBuildings()
-    {
-        BuildingPlot[] buidingPlots = gameObject.GetComponentsInChildren<BuildingPlot>();
-        foreach(BuildingPlot buidingPlot in buidingPlots)
-        {
-            int x = Mathf.RoundToInt(GetPlotCoordinate(buidingPlot).x);
-            int y = Mathf.RoundToInt(GetPlotCoordinate(buidingPlot).y);
-            buidingPlot.Build(ConvertToLevels(perlinGenerator.GetNoiseValue(x, y)));
-        }
-    }
-
     private int ConvertToLevels(float noiseValue)
     {
         return Mathf.FloorToInt(noiseValue * (maxBuildingHeight - 1)) + 2;

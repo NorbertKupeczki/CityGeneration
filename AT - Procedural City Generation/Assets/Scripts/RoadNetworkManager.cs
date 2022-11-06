@@ -25,6 +25,7 @@ public class RoadNetworkManager : MonoBehaviour
     [SerializeField] int height;
 
     private BuildingManager buildingManager;
+    private CityManager cityManager;
 
     private void Awake()
     {
@@ -32,6 +33,7 @@ public class RoadNetworkManager : MonoBehaviour
         perlinGenerator.SetMapSize(width, height);
 
         buildingManager = FindObjectOfType<BuildingManager>();
+        cityManager = FindObjectOfType<CityManager>();
         buildingManager.SetPlotsSize(width * 2, height * 2);
     }
 
@@ -152,7 +154,7 @@ public class RoadNetworkManager : MonoBehaviour
                                       Quaternion.identity);
 
         Propogate(tileScript, tile);
-        tile.transform.SetParent(gameObject.transform);
+        cityManager.AddRoadToHierarchy(tile);
         tileScript.SetSolved();
 
         wfcTiles.Remove(_wfcTile);

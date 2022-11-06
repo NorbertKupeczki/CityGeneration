@@ -5,8 +5,6 @@ using System.Collections;
 public class BuildingManager : MonoBehaviour
 {
     [Header("Building Prefabs")]
-    [SerializeField] GameObject park;
-    [SerializeField] List<GameObject> _residentialSmall = new List<GameObject>();
     [SerializeField] List<GameObject> _testBuildings = new List<GameObject>();
     [SerializeField] GameObject _largePlot;
 
@@ -23,6 +21,12 @@ public class BuildingManager : MonoBehaviour
     [SerializeField] int _numberOfParks = 2;
 
     private int jobsRunning = 1;
+    private CityManager _cityManager;
+
+    private void Awake()
+    {
+        _cityManager = FindObjectOfType<CityManager>();
+    }
 
     private void Start()
     {
@@ -32,16 +36,6 @@ public class BuildingManager : MonoBehaviour
     public bool AreJobsRunning()
     {
         return jobsRunning != 0;
-    }
-
-    public GameObject GetBuildingBlock(BuildingsData.BuildingLevel level)
-    {
-        return _residentialSmall[(int)level];
-    }
-
-    public GameObject GetParkTile ()
-    {
-        return park;
     }
 
     public GameObject GetTestBlock(int id)
@@ -98,6 +92,7 @@ public class BuildingManager : MonoBehaviour
 
                     newLargePlot.AddBuildingPlot(_allPlots[CoordsToPlot(x, y)]);
                     newLargePlot.transform.SetParent(gameObject.transform);
+                    _cityManager.AddZoneToHierarchy(newLargePlot.gameObject);
                     FindNeighbours(x, y, newLargePlot);
                     _totalBuildingPlots += newLargePlot.SetPlotsToComplete();
                 }
