@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class BuildingManager : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class BuildingManager : MonoBehaviour
 
     private int jobsRunning = 1;
     private CityManager _cityManager;
+
+    public Action GenerationComplete;
 
     private void Awake()
     {
@@ -319,6 +322,8 @@ public class BuildingManager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
         }
+
+        GenerationComplete?.Invoke();
 
         Debug.Log("Building Construction Complete");
         yield break;

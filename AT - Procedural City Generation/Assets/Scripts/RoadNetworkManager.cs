@@ -37,29 +37,6 @@ public class RoadNetworkManager : MonoBehaviour
         buildingManager.SetPlotsSize(width * 2, height * 2);
     }
 
-    void Start()
-    {
-        GenerateGrid();
-        //InstantiateTile(PickRandomGridTile());
-
-        switch (generationMethod)
-        {
-            case GenerationMethod.MANUAL:
-                break;
-            case GenerationMethod.AUTO:
-                GenerateRoadNetwork();
-                buildingManager.CreateLargePlots();
-                buildingManager.CreateZones();
-                break;
-            case GenerationMethod.VISUALIZED:
-                StartCoroutine(GenerateRoads());
-                break;
-            default:
-                break;
-        }
-    }
-
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) &&
@@ -75,9 +52,10 @@ public class RoadNetworkManager : MonoBehaviour
         while (shortlistedTiles.Count > 0)
         {
             InstantiateTile(shortlistedTiles[0]);
-            yield return new WaitForSeconds(0.005f);
+            yield return null;
         }
         Debug.Log("Road network done");
+        FindObjectOfType<CameraManager>().StartCameraMovement();
         buildingManager.CreateLargePlots();
         buildingManager.CreateZones();
         yield break;
@@ -413,5 +391,25 @@ public class RoadNetworkManager : MonoBehaviour
             edgeTileScript = edgeTileScript.GetNorthNeighbour().GetComponent<WFC_Tile>();            
         }
 
+    }
+
+    public void StartCityGeneration()
+    {
+        GenerateGrid();
+        switch (generationMethod)
+        {
+            case GenerationMethod.MANUAL:
+                break;
+            case GenerationMethod.AUTO:
+                GenerateRoadNetwork();
+                buildingManager.CreateLargePlots();
+                buildingManager.CreateZones();
+                break;
+            case GenerationMethod.VISUALIZED:
+                StartCoroutine(GenerateRoads());
+                break;
+            default:
+                break;
+        }
     }
 }
