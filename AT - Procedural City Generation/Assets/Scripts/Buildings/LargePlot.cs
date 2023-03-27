@@ -239,7 +239,7 @@ public class LargePlot : MonoBehaviour
             block.GetComponent<BuildingClass>().SetColour(_colour);
         }
         
-        Propogate(volumeScript, block);
+        Propagate(volumeScript, block);
         block.transform.SetParent(gameObject.transform); // Once everyting is done, we can destroy the block instead of keeping it
         volumeScript.SetSolved();
 
@@ -265,7 +265,7 @@ public class LargePlot : MonoBehaviour
         //SortVolumesByEntrophy();
     }
 
-    private void Propogate(BuildVolume volumeScript, GameObject block)
+    private void Propagate(BuildVolume volumeScript, GameObject block)
     {
         // Propogate to North
         if (volumeScript.GetNorth())
@@ -273,7 +273,7 @@ public class LargePlot : MonoBehaviour
             BuildVolume north = volumeScript.GetNorth().GetComponent<BuildVolume>();
             if (!north.IsSolved())
             {
-                PropogateToBlock(volumeScript.GetNorth(), block.GetComponent<BuildingClass>().GetNorth());
+                PropagateToBlock(volumeScript.GetNorth(), block.GetComponent<BuildingClass>().GetNorth());
                 north.Propogate();
             }
         }
@@ -284,7 +284,7 @@ public class LargePlot : MonoBehaviour
             BuildVolume west = volumeScript.GetWest().GetComponent<BuildVolume>();
             if (!west.IsSolved())
             {
-                PropogateToBlock(volumeScript.GetWest(), block.GetComponent<BuildingClass>().GetWest());
+                PropagateToBlock(volumeScript.GetWest(), block.GetComponent<BuildingClass>().GetWest());
                 west.Propogate();
             }
         }
@@ -295,7 +295,7 @@ public class LargePlot : MonoBehaviour
             BuildVolume south = volumeScript.GetSouth().GetComponent<BuildVolume>();
             if (!south.IsSolved())
             {
-                PropogateToBlock(volumeScript.GetSouth(), block.GetComponent<BuildingClass>().GetSouth());
+                PropagateToBlock(volumeScript.GetSouth(), block.GetComponent<BuildingClass>().GetSouth());
                 south.Propogate();
             }
         }
@@ -306,7 +306,7 @@ public class LargePlot : MonoBehaviour
             BuildVolume east = volumeScript.GetEast().GetComponent<BuildVolume>();
             if (!east.IsSolved())
             {
-                PropogateToBlock(volumeScript.GetEast(), block.GetComponent<BuildingClass>().GetEast());
+                PropagateToBlock(volumeScript.GetEast(), block.GetComponent<BuildingClass>().GetEast());
                 east.Propogate();
             }
         }
@@ -317,7 +317,7 @@ public class LargePlot : MonoBehaviour
             BuildVolume up = volumeScript.GetUp().GetComponent<BuildVolume>();
             if (!up.IsSolved())
             {
-                PropogateToBlock(volumeScript.GetUp(), block.GetComponent<BuildingClass>().GetAbove());
+                PropagateToBlock(volumeScript.GetUp(), block.GetComponent<BuildingClass>().GetAbove());
                 up.Propogate();
             }
         }
@@ -329,13 +329,13 @@ public class LargePlot : MonoBehaviour
             BuildVolume down = volumeScript.GetDown().GetComponent<BuildVolume>();
             if (!down.IsSolved())
             {
-                PropogateToBlock(volumeScript.GetDown(), block.GetComponent<BuildingClass>().GetBelow());
+                PropagateToBlock(volumeScript.GetDown(), block.GetComponent<BuildingClass>().GetBelow());
                 down.Propogate();
             }
         }
     }
 
-    private void PropogateToBlock(GameObject buildVolume, List<int> _validBlocks)
+    private void PropagateToBlock(GameObject buildVolume, List<int> _validBlocks)
     {
         BuildVolume volumeScript = buildVolume.GetComponent<BuildVolume>();
         volumeScript.Collapse(_buildingManager.GetInvalidBlocks(_validBlocks));

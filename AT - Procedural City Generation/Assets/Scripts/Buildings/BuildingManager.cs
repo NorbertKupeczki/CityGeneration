@@ -68,11 +68,6 @@ public class BuildingManager : MonoBehaviour
         _allPlots[CoordsToPlot(x, y)] = plot;
     }
     
-    private void RemovePlot(int ID)
-    {
-        _allPlots[ID] = null;
-    }
-
     private GameObject NewLargePlot()
     {
         GameObject newLargePlot = Instantiate(_largePlot);
@@ -104,8 +99,6 @@ public class BuildingManager : MonoBehaviour
 
         SortLargePlotsByDistance();
         Debug.Log("Zones done");
-
-        // Start the Wave Function Collapse on each zone
     }
 
     private void FindNeighbours(int _x, int _y, LargePlot largePlot)
@@ -117,25 +110,25 @@ public class BuildingManager : MonoBehaviour
         if (_y - 1 >= 0 && _allPlots[CoordsToPlot(_x, _y - 1)] != null)
         {
             LinkPlots(plot, _allPlots[CoordsToPlot(_x, _y - 1)], BuildingsData.Direction.NORTH, largePlot);
-            RecursivePropogation(_x, _y - 1, largePlot);
+            RecursivePropagation(_x, _y - 1, largePlot);
         }
         //Find west neighbour
         if (_x - 1 >= 0 && _allPlots[CoordsToPlot(_x - 1, _y)] != null)
         {
             LinkPlots(plot, _allPlots[CoordsToPlot(_x - 1, _y)], BuildingsData.Direction.WEST, largePlot);
-            RecursivePropogation(_x - 1, _y, largePlot);
+            RecursivePropagation(_x - 1, _y, largePlot);
         }
         //Find south neighbour
         if (_y + 1 < _plotsHeight && _allPlots[CoordsToPlot(_x, _y + 1)] != null)
         {
             LinkPlots(plot, _allPlots[CoordsToPlot(_x, _y + 1)], BuildingsData.Direction.SOUTH, largePlot);
-            RecursivePropogation(_x, _y + 1, largePlot);
+            RecursivePropagation(_x, _y + 1, largePlot);
         }
         //Find east neighbour
         if (_x + 1 < _plotsWidth && _allPlots[CoordsToPlot(_x + 1, _y)] != null)
         {
             LinkPlots(plot, _allPlots[CoordsToPlot(_x + 1, _y)], BuildingsData.Direction.EAST, largePlot);
-            RecursivePropogation(_x + 1, _y, largePlot);
+            RecursivePropagation(_x + 1, _y, largePlot);
         }
     }
 
@@ -180,7 +173,7 @@ public class BuildingManager : MonoBehaviour
         }
     }
 
-    private void RecursivePropogation(int x, int y, LargePlot largePlot)
+    private void RecursivePropagation(int x, int y, LargePlot largePlot)
     {
         if (_allPlots[CoordsToPlot(x, y)].GetComponent<BuildingPlot>().IsNotLinked())
         {

@@ -37,12 +37,6 @@ public class RoadClass : MonoBehaviour
     {
         gameObject.name = _name + " (" + gameObject.transform.position.x + ":" + gameObject.transform.position.z + ")";
         perlinGenerator = FindObjectOfType<PerlinGenerator>();
-        //GenerateBuildings();
-    }
-
-    private int ConvertToLevels(float noiseValue)
-    {
-        return Mathf.FloorToInt(noiseValue * (maxBuildingHeight - 1)) + 2;
     }
 
     private Vector2 GetPlotCoordinate(BuildingPlot plot)

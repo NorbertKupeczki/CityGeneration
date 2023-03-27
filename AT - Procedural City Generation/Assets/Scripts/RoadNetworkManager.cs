@@ -16,8 +16,8 @@ public class RoadNetworkManager : MonoBehaviour
 
     [Header("Wave Funciton Collapse data")]
     [SerializeField] GameObject wfcTile;
-    [SerializeField] List<GameObject> wfcTiles = new List<GameObject>();
-    [SerializeField] List<GameObject> shortlistedTiles = new List<GameObject>();
+    [SerializeField] List<GameObject> wfcTiles = new ();
+    [SerializeField] List<GameObject> shortlistedTiles = new();
 
     [Header("Road network")]
     [SerializeField] GenerationMethod generationMethod = GenerationMethod.AUTO;
@@ -36,9 +36,11 @@ public class RoadNetworkManager : MonoBehaviour
         cityManager = FindObjectOfType<CityManager>();
         buildingManager.SetPlotsSize(width * 2, height * 2);
     }
-
+    
+    /*
     void Update()
     {
+        // FOR TESTING
         if (Input.GetKeyDown(KeyCode.Space) &&
             generationMethod == GenerationMethod.MANUAL)
         {
@@ -46,6 +48,7 @@ public class RoadNetworkManager : MonoBehaviour
         }
 
     }
+    */
 
     IEnumerator GenerateRoads()
     {
@@ -87,9 +90,7 @@ public class RoadNetworkManager : MonoBehaviour
                 ++tileId;
             }
         }
-
-        //CreateEdgesOld();
-        CreateEdgesNew();
+        CreateEdges();
     }
 
     private void GenerateRoadNetwork()
@@ -100,29 +101,6 @@ public class RoadNetworkManager : MonoBehaviour
         }
     }
 
-    private GameObject PickRandomGridTile()
-    {
-        return wfcTiles[Random.Range(0, wfcTiles.Count)];
-    }
-
-    private void InstantiateSpecificTile(GameObject _wfcTile, int _tileID)
-    {
-        WFC_Tile tileScript = _wfcTile.GetComponent<WFC_Tile>();
-
-        GameObject tile = Instantiate(tiles[_tileID],
-                                      tileScript.GetPostition(),
-                                      Quaternion.identity);
-        Propogate(tileScript, tile);
-        tile.GetComponent<RoadClass>().SetMapSize(new Vector2(width, height));
-
-        tileScript.SetSolved();
-
-        wfcTiles.Remove(_wfcTile);
-        shortlistedTiles.Remove(_wfcTile);
-
-        SortShortlist();
-    }
-
     private void InstantiateTile(GameObject _wfcTile)
     {
         WFC_Tile tileScript = _wfcTile.GetComponent<WFC_Tile>();
@@ -131,7 +109,7 @@ public class RoadNetworkManager : MonoBehaviour
                                       tileScript.GetPostition(),
                                       Quaternion.identity);
 
-        Propogate(tileScript, tile);
+        Propagate(tileScript, tile);
         cityManager.AddRoadToHierarchy(tile);
         tileScript.SetSolved();
 
@@ -141,16 +119,16 @@ public class RoadNetworkManager : MonoBehaviour
         SortShortlist();
     }
 
-    private void Propogate(WFC_Tile tileScript, GameObject tile)
+    private void Propagate(WFC_Tile tileScript, GameObject tile)
     {
         // Propogate to North
         if (tileScript.GetNorthNeighbour())
         {
             if (!tileScript.GetNorthNeighbour().GetComponent<WFC_Tile>().IsSolved())
             {
-                PropogateToTile(tileScript.GetNorthNeighbour(), tile.GetComponent<RoadClass>().GetNorth());
+                PropagateToTile(tileScript.GetNorthNeighbour(), tile.GetComponent<RoadClass>().GetNorth());
                 ShortlistTile(tileScript.GetNorthNeighbour());
-                tileScript.GetNorthNeighbour().GetComponent<WFC_Tile>().Propogate();
+                tileScript.GetNorthNeighbour().GetComponent<WFC_Tile>().Propagate();
             }
         }
 
@@ -159,9 +137,9 @@ public class RoadNetworkManager : MonoBehaviour
         {
             if (!tileScript.GetSouthNeighbour().GetComponent<WFC_Tile>().IsSolved())
             {
-                PropogateToTile(tileScript.GetSouthNeighbour(), tile.GetComponent<RoadClass>().GetSouth());
+                PropagateToTile(tileScript.GetSouthNeighbour(), tile.GetComponent<RoadClass>().GetSouth());
                 ShortlistTile(tileScript.GetSouthNeighbour());
-                tileScript.GetSouthNeighbour().GetComponent<WFC_Tile>().Propogate();
+                tileScript.GetSouthNeighbour().GetComponent<WFC_Tile>().Propagate();
             }
         }
 
@@ -170,9 +148,9 @@ public class RoadNetworkManager : MonoBehaviour
         {
             if (!tileScript.GetWestNeighbour().GetComponent<WFC_Tile>().IsSolved())
             {
-                PropogateToTile(tileScript.GetWestNeighbour(), tile.GetComponent<RoadClass>().GetWest());
+                PropagateToTile(tileScript.GetWestNeighbour(), tile.GetComponent<RoadClass>().GetWest());
                 ShortlistTile(tileScript.GetWestNeighbour());
-                tileScript.GetWestNeighbour().GetComponent<WFC_Tile>().Propogate();
+                tileScript.GetWestNeighbour().GetComponent<WFC_Tile>().Propagate();
             }
         }
 
@@ -181,14 +159,14 @@ public class RoadNetworkManager : MonoBehaviour
         {
             if (!tileScript.GetEastNeighbour().GetComponent<WFC_Tile>().IsSolved())
             {
-                PropogateToTile(tileScript.GetEastNeighbour(), tile.GetComponent<RoadClass>().GetEast());
+                PropagateToTile(tileScript.GetEastNeighbour(), tile.GetComponent<RoadClass>().GetEast());
                 ShortlistTile(tileScript.GetEastNeighbour());
-                tileScript.GetEastNeighbour().GetComponent<WFC_Tile>().Propogate();
+                tileScript.GetEastNeighbour().GetComponent<WFC_Tile>().Propagate();
             }
         }
     }
 
-    private void PropogateToTile(GameObject _wfcTile, List<int> _validTiles)
+    private void PropagateToTile(GameObject _wfcTile, List<int> _validTiles)
     {
         WFC_Tile tileScript = _wfcTile.GetComponent<WFC_Tile>();
         tileScript.Collapse(GetInvalidTiles(_validTiles));
@@ -241,93 +219,7 @@ public class RoadNetworkManager : MonoBehaviour
         }        
     }
 
-    private void CreateEdgesOld()
-    {
-        GameObject edgeTile = wfcTiles[0];
-        for (int i = 0; i < width; ++i)
-        {
-            if (i != Mathf.Floor(width * 0.5f) + 1)
-            {
-                InstantiateSpecificTile(edgeTile,
-                                        i == Mathf.Floor(width * 0.5f) ? 3 : 0);
-            }
-            else
-            {
-                InstantiateSpecificTile(edgeTile, 4);
-            }
-
-            if (edgeTile.GetComponent<WFC_Tile>().GetID() == width - 1)
-            {
-                edgeTile = edgeTile.GetComponent<WFC_Tile>().GetSouthNeighbour();
-            }
-            else
-            {
-                edgeTile = edgeTile.GetComponent<WFC_Tile>().GetEastNeighbour();
-            }
-        }
-
-        for (int i = 1; i < height; ++i)
-        {
-            if (i != Mathf.Floor(height * 0.5f) + 1)
-            {
-                InstantiateSpecificTile(edgeTile,
-                                    i == Mathf.Floor(height * 0.5f) ? 1 : 0);
-            }
-            else
-            {
-                InstantiateSpecificTile(edgeTile, 2);
-            }
-
-            if (edgeTile.GetComponent<WFC_Tile>().GetID() == height * width - 1)
-            {
-                edgeTile = edgeTile.GetComponent<WFC_Tile>().GetWestNeighbour();
-            }
-            else
-            {
-                edgeTile = edgeTile.GetComponent<WFC_Tile>().GetSouthNeighbour();
-            }
-        }
-
-        for (int i = 1; i < width; ++i)
-        {
-            if (i != Mathf.Floor(width * 0.5f) + 1)
-            {
-                InstantiateSpecificTile(edgeTile,
-                                    i == Mathf.Floor(height * 0.5f) ? 4 : 0);
-            }
-            else
-            {
-                InstantiateSpecificTile(edgeTile, 3);
-            }
-
-            if (edgeTile.GetComponent<WFC_Tile>().GetID() == (height - 1) * width)
-            {
-                edgeTile = edgeTile.GetComponent<WFC_Tile>().GetNorthNeighbour();
-            }
-            else
-            {
-                edgeTile = edgeTile.GetComponent<WFC_Tile>().GetWestNeighbour();
-            }
-        }
-
-        for (int i = 1; i < height - 1; ++i)
-        {
-            if (i != Mathf.Floor(height * 0.5f) + 1)
-            {
-                InstantiateSpecificTile(edgeTile,
-                                    i == Mathf.Floor(height * 0.5f) ? 2 : 0);
-            }
-            else
-            {
-                InstantiateSpecificTile(edgeTile, 1);
-            }
-
-            edgeTile = edgeTile.GetComponent<WFC_Tile>().GetNorthNeighbour();
-
-        }
-    }
-
-    private void CreateEdgesNew()
+    private void CreateEdges()
     {
         WFC_Tile edgeTileScript = wfcTiles[0].GetComponent<WFC_Tile>();
 
@@ -341,8 +233,7 @@ public class RoadNetworkManager : MonoBehaviour
             if (i < width - 1)
             {
                 edgeTileScript.Collapse(new List<int> { 2, 7, 8, 11, 12 });
-                //edgeTileScript.Collapse(new List<int> { 2, 3, 4, 5, 6, 7, 8, 11, 12 });
-                edgeTileScript.PropogateToDirection(BuildingsData.Direction.SOUTH);
+                edgeTileScript.PropagateToDirection(BuildingsData.Direction.SOUTH);
                 edgeTileScript = edgeTileScript.GetEastNeighbour().GetComponent<WFC_Tile>();
             }
             else
@@ -357,8 +248,7 @@ public class RoadNetworkManager : MonoBehaviour
             if (i < height - 1)
             {
                 edgeTileScript.Collapse(new List<int> { 3, 5, 8, 9, 12 });
-                //edgeTileScript.Collapse(new List<int> { 1, 2, 3, 5, 6, 7, 8, 9, 12 });
-                edgeTileScript.PropogateToDirection(BuildingsData.Direction.WEST);
+                edgeTileScript.PropagateToDirection(BuildingsData.Direction.WEST);
                 edgeTileScript = edgeTileScript.GetSouthNeighbour().GetComponent<WFC_Tile>();
             }
             else
@@ -372,8 +262,7 @@ public class RoadNetworkManager : MonoBehaviour
             if (i < width - 1)
             {
                 edgeTileScript.Collapse(new List<int> { 1, 5, 6, 9, 10 });
-                //edgeTileScript.Collapse(new List<int> { 1, 3, 4, 5, 6, 7, 8, 9, 10 });
-                edgeTileScript.PropogateToDirection(BuildingsData.Direction.NORTH);
+                edgeTileScript.PropagateToDirection(BuildingsData.Direction.NORTH);
                 edgeTileScript = edgeTileScript.GetWestNeighbour().GetComponent<WFC_Tile>();
             }
             else
@@ -386,8 +275,7 @@ public class RoadNetworkManager : MonoBehaviour
         for (int i = 1; i < height -1; ++i)
         {
             edgeTileScript.Collapse(new List<int> { 4, 6, 7, 10, 11 });
-            //edgeTileScript.Collapse(new List<int> { 1, 2, 4, 5, 6, 7, 8, 10, 11 });
-            edgeTileScript.PropogateToDirection(BuildingsData.Direction.EAST);
+            edgeTileScript.PropagateToDirection(BuildingsData.Direction.EAST);
             edgeTileScript = edgeTileScript.GetNorthNeighbour().GetComponent<WFC_Tile>();            
         }
 

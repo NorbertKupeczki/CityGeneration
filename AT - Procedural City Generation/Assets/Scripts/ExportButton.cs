@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor.Formats.Fbx.Exporter;
@@ -31,7 +29,6 @@ public class ExportButton : MonoBehaviour
     public void StartExporting()
     {
         MeshRenderer[] renderables = _exportables.GetComponentsInChildren<MeshRenderer>();
-        //UnityEngine.Object test = renderables[0].gameObject;
 
         UnityEngine.Object[] toExport = Array.ConvertAll(renderables, item => (UnityEngine.Object)item.gameObject);
 

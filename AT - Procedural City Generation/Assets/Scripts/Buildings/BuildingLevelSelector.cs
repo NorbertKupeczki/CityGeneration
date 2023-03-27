@@ -20,18 +20,12 @@ public class BuildingLevelSelector : MonoBehaviour
         {
             case BuildingsData.BuildingLevel.BASE:
                 _base.SetActive(true);
-                // Destroy(_middle);
-                // Destroy(_top);
                 break;
             case BuildingsData.BuildingLevel.MID:
                 _middle.SetActive(true);
-                // Destroy(_base);
-                // Destroy(_top);
                 break;
             case BuildingsData.BuildingLevel.TOP:
                 _top.SetActive(true);
-                // Destroy(_base);
-                // Destroy(_middle);
                 break;
             default:
                 break;

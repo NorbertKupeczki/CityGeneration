@@ -7,9 +7,6 @@ public class BuildingPlot : MonoBehaviour
     [SerializeField] float scaleFactor;
     [SerializeField] float curbHeight = 0.02f;
     [SerializeField] BuildingsData.PlotType plotType = BuildingsData.PlotType.UNDEFINED;
-    [SerializeField] Vector2 worldCoord;
-
-    private BuildingManager manager;
 
     [Header("Neighbours")]
     [SerializeField] BuildingsData.PlotLinking _plotLink = BuildingsData.PlotLinking.NOT_STARTED;
@@ -21,31 +18,12 @@ public class BuildingPlot : MonoBehaviour
     [Header("Build Volume")]
     [SerializeField] GameObject buildVolumePrefab;
     [SerializeField] int maxHeight = 10;
-    [SerializeField] List<GameObject> buildVolumes = new List<GameObject> { };
+    [SerializeField] List<GameObject> buildVolumes = new();
 
-    private void Awake()
-    {
-        manager = FindObjectOfType<BuildingManager>();
-        worldCoord = new Vector2(gameObject.transform.position.z, gameObject.transform.position.x);
-    }
 
     public int GetMaxHeight()
     {
         return maxHeight;
-    }
-
-    private void BuildTestBlock(int levels, Color colour)
-    {
-        GameObject building = Instantiate(buildingBlock,
-                              new Vector3 (gameObject.transform.position.x,
-                                           gameObject.transform.localScale.y * (levels * 0.5f) * scaleFactor + curbHeight,
-                                           gameObject.transform.position.z),
-                              Quaternion.identity);
-        building.transform.localScale = new Vector3 (building.transform.localScale.x,
-                                                     building.transform.localScale.y * levels,
-                                                     building.transform.localScale.z);
-        building.transform.SetParent(gameObject.transform);
-        building.GetComponent<Renderer>().material.color = colour;
     }
 
     public bool IsNotLinked()

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -80,10 +79,6 @@ public class WFC_Tile : MonoBehaviour
         }
         else
         {
-            //int rnd = Random.Range(0, validTiles.Count);
-            //Debug.Log("Tile ID: " + validTiles[rnd].ToString());
-            //return validTiles[rnd];
-
             return RoadData.GetWeightedRoadIndex(validTiles);
         }
     }
@@ -98,53 +93,53 @@ public class WFC_Tile : MonoBehaviour
         entrophy = validTiles.Count;
     }
 
-    public void Propogate()
+    public void Propagate()
     {
-        PropogateToDirection(BuildingsData.Direction.NORTH);
-        PropogateToDirection(BuildingsData.Direction.EAST);
-        PropogateToDirection(BuildingsData.Direction.SOUTH);
-        PropogateToDirection(BuildingsData.Direction.WEST);
+        PropagateToDirection(BuildingsData.Direction.NORTH);
+        PropagateToDirection(BuildingsData.Direction.EAST);
+        PropagateToDirection(BuildingsData.Direction.SOUTH);
+        PropagateToDirection(BuildingsData.Direction.WEST);
     }
 
-    public void PropogateToDirection(BuildingsData.Direction direction)
+    public void PropagateToDirection(BuildingsData.Direction direction)
     {
         if (HasNeighbour(direction))
         {
-            List<int> validToPropogate = new List<int>() { };
+            List<int> validToPropagate = new List<int>() { };
 
             foreach (int tile in validTiles)
             {
                 List<int> validTileIDs = roadManager.GetValidTilesByID(tile, direction);
                 for (int i = 0; i < validTileIDs.Count; ++i)
                 {
-                    if (!validToPropogate.Contains(validTileIDs[i]))
+                    if (!validToPropagate.Contains(validTileIDs[i]))
                     {
-                        validToPropogate.Add(validTileIDs[i]);
+                        validToPropagate.Add(validTileIDs[i]);
                     }
                 }
             }
 
-            List<int> invalidToPropogate = new List<int>() { };
-            invalidToPropogate.AddRange(roadManager.GetInvalidTiles(validToPropogate));
+            List<int> invalidToPropagate = new List<int>() { };
+            invalidToPropagate.AddRange(roadManager.GetInvalidTiles(validToPropagate));
 
-            if (invalidToPropogate.Count > 0)
+            if (invalidToPropagate.Count > 0)
             {
                 switch (direction)
                 {
                     case BuildingsData.Direction.NORTH:
-                        GetNorthNeighbour().GetComponent<WFC_Tile>().Collapse(invalidToPropogate);
+                        GetNorthNeighbour().GetComponent<WFC_Tile>().Collapse(invalidToPropagate);
                         roadManager.ShortlistTile(GetNorthNeighbour());
                         break;
                     case BuildingsData.Direction.WEST:
-                        GetWestNeighbour().GetComponent<WFC_Tile>().Collapse(invalidToPropogate);
+                        GetWestNeighbour().GetComponent<WFC_Tile>().Collapse(invalidToPropagate);
                         roadManager.ShortlistTile(GetWestNeighbour());
                         break;
                     case BuildingsData.Direction.SOUTH:
-                        GetSouthNeighbour().GetComponent<WFC_Tile>().Collapse(invalidToPropogate);
+                        GetSouthNeighbour().GetComponent<WFC_Tile>().Collapse(invalidToPropagate);
                         roadManager.ShortlistTile(GetSouthNeighbour());
                         break;
                     case BuildingsData.Direction.EAST:
-                        GetEastNeighbour().GetComponent<WFC_Tile>().Collapse(invalidToPropogate);
+                        GetEastNeighbour().GetComponent<WFC_Tile>().Collapse(invalidToPropagate);
                         roadManager.ShortlistTile(GetEastNeighbour());
                         break;
                     default:
